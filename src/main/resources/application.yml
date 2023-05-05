@@ -1,3 +1,14 @@
 hello: Mazine
 bye:
   value: Sam
+spring:
+  application:
+    name: languageWebs
+  datasource:
+    url: jdbc:postgresql://localhost:5432/languageWebs
+    username: dev
+    password: admin123
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
