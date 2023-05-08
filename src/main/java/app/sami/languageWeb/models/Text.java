@@ -1,11 +1,10 @@
 package app.sami.languageWeb.models;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
 @Table
 @NoArgsConstructor
 @Data
-public class texts {
+public class Text {
     @Id
     @GeneratedValue
     private UUID id;
@@ -21,6 +20,8 @@ public class texts {
     private String textContent;
     private String textLink;
     private String textLanguage;
-    private Date dateAdded;
+    @CreatedDate
+    private Instant dateAdded;
+
     private UUID userId;
 }

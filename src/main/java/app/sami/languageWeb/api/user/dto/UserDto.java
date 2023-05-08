@@ -1,4 +1,4 @@
-package app.sami.languageWeb.api.dto;
+package app.sami.languageWeb.api.user.dto;
 
 import app.sami.languageWeb.models.User;
 import lombok.AllArgsConstructor;
@@ -20,6 +20,5 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String userPassword;
     private Date dateJoined;
 }

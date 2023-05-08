@@ -1,17 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
---texts
-
-CREATE TABLE texts(
-	id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
-	text_content varchar(5120),
-	text_link varchar(400),
-	text_language varchar(15) NOT NULL,
-	date_added timestamp(6),
-	user_id uuid NOT NULL,
-	UNIQUE(user_id)
-);
-
 --users
 
 CREATE TABLE users (
@@ -24,3 +12,17 @@ CREATE TABLE users (
     user_role varchar(10) DEFAULT ('USER'),
 	UNIQUE (email)
 );
+
+--texts
+
+CREATE TABLE texts(
+	id uuid DEFAULT uuid_generate_v4() PRIMARY KEY,
+	text_content varchar(5120),
+	text_link varchar(400),
+	text_language varchar(15) NOT NULL,
+	date_added timestamp(6),
+	user_id uuid NOT NULL REFERENCES users(id),
+	UNIQUE(user_id)
+
+);
+
