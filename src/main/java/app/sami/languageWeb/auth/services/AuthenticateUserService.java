@@ -1,8 +1,8 @@
-package app.sami.languageWeb.api.auth.services;
+package app.sami.languageWeb.auth.services;
 
-import app.sami.languageWeb.api.auth.dtos.AuthenticationRequest;
-import app.sami.languageWeb.api.auth.AuthenticationResponse;
-import app.sami.languageWeb.models.User;
+import app.sami.languageWeb.auth.AuthenticationResponse;
+import app.sami.languageWeb.dtos.AuthenticationRequest;
+import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.repos.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

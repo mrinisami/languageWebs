@@ -1,4 +1,4 @@
-package app.sami.languageWeb.models;
+package app.sami.languageWeb.user.models;
 
 public enum Role {
     USER,

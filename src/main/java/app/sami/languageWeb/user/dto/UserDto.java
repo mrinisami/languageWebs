@@ -1,13 +1,11 @@
-package app.sami.languageWeb.api.user.dto;
+package app.sami.languageWeb.user.dto;
 
-import app.sami.languageWeb.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package app.sami.languageWeb.api.auth.services;
+package app.sami.languageWeb.auth.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -19,7 +19,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${secret_key}")
+    @Value("${app.secret_key}")
     private String SECRET_KEY;
 
     public String extractUsername(String token) {

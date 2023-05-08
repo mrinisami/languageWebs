@@ -1,12 +1,11 @@
-package app.sami.languageWeb.api.user;
+package app.sami.languageWeb.user;
 
-import app.sami.languageWeb.api.user.dto.UserDto;
-import app.sami.languageWeb.api.user.dto.UsersDto;
-import app.sami.languageWeb.models.User;
 import app.sami.languageWeb.repos.UserRepository;
+import app.sami.languageWeb.user.dto.UserDto;
+import app.sami.languageWeb.user.dto.UsersDto;
+import app.sami.languageWeb.user.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

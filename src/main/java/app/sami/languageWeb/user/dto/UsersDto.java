@@ -1,4 +1,4 @@
-package app.sami.languageWeb.api.user.dto;
+package app.sami.languageWeb.user.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

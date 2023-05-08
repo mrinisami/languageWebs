@@ -1,6 +1,6 @@
 package app.sami.languageWeb.config;
 
-import app.sami.languageWeb.api.auth.services.JwtService;
+import app.sami.languageWeb.auth.services.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

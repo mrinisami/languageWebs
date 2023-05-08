@@ -1,4 +1,4 @@
-package app.sami.languageWeb.api.auth.dtos;
+package app.sami.languageWeb.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

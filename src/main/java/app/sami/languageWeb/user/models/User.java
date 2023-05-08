@@ -1,4 +1,4 @@
-package app.sami.languageWeb.models;
+package app.sami.languageWeb.user.models;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,7 +33,7 @@ public class User implements UserDetails{
     private String userPassword;
 
     @CreatedDate
-    private Instant dateJoined;
+    private Instant createdAt;
 
     @Enumerated(EnumType.STRING)
     private Role userRole;
