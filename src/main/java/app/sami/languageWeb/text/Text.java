@@ -14,8 +14,8 @@ import java.util.UUID;
 @Data
 public class Text {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String textContent;
     private String textLink;
