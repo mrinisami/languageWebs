@@ -1,7 +1,6 @@
 package app.sami.languageWeb.auth;
 
 import app.sami.languageWeb.auth.services.JwtService;
-import app.sami.languageWeb.user.models.Role;
 import jakarta.annotation.security.RolesAllowed;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  languageWebs_pg:
+    container_name: 'postgres_ps'
+    image: 'postgres:14.6'
+    ports:
+      - '5432:5432'
+    environment:
+        POSTGRES_DB: 'languageWebs'
+        POSTGRES_USER: 'dev'
+        POSTGRES_PASSWORD: 'admin123'
+
+  pgadmin:
+    container_name: 'pgadmin'
+    image: 'dpage/pgadmin4'
+    ports:
+      - '4444:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin123'
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+      - './config/pgadmin.json:/pgadmin4/servers.json'
