@@ -1,64 +1,58 @@
 package app.sami.languageWeb.auth.services;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import app.sami.languageWeb.user.models.Role;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JOSEObjectType;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
 
-import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
-
-@Service
+@AllArgsConstructor
 public class JwtService {
 
-    @Value("${app.secret_key}")
-    private String SECRET_KEY;
-
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    private JWKSet jwkSet;
+    private String issuer;
+    public Map<String, Object> getPublicKey(){
+        return jwkSet.toJSONObject(true);
     }
-
     public String generateToken(UserDetails userDetails){
         return generateToken(userDetails, new HashMap<>());
     }
     public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims){
-        return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis())).setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+        JWTClaimsSet claims = new JWTClaimsSet.Builder().jwtID(UUID.randomUUID().toString())
+                .subject(userDetails.getUsername())
+                .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)))
+                .issueTime(Date.from(Instant.now()))
+                .claim("roles", Arrays.asList("USER"))
+                .issuer(issuer)
+                .build();
+        JWSHeader headers = new JWSHeader.Builder(JWSAlgorithm.RS256)
+                .type(JOSEObjectType.JWT)
+                .keyID(jwkSet.getKeys().get(0).getKeyID())
+                .build();
+        return sign(headers, claims);
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
-        final String username = extractUsername(token);
-        return username.equals(userDetails.getUsername());
+    private String sign(JWSHeader headers, JWTClaimsSet claims) {
+        SignedJWT signedJWT = new SignedJWT(headers, claims);
+        try {
+            signedJWT.sign(new RSASSASigner(jwkSet.getKeys().get(0).toRSAKey().toRSAPrivateKey()));
+        } catch (JOSEException e) {
+            throw new RuntimeException(e);
+        }
+        return signedJWT.serialize();
     }
 
-    private boolean isTokenExpired(String token){
-        return extractExpiration(token).before(new Date());
-    }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimResolver.apply(claims);
-    }
 
-    private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token).getBody();
-    }
-
-    private Key getSigningKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(this.SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
 }
