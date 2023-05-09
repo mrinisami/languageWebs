@@ -1,6 +1,7 @@
 package app.sami.languageWeb.user.models;
 
 import app.sami.languageWeb.auth.Role;
+import app.sami.languageWeb.language.models.LanguageGrades;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,6 +39,9 @@ public class User implements UserDetails{
 
     @Enumerated(EnumType.STRING)
     private Role userRole;
+
+    @OneToOne(mappedBy = "user")
+    private LanguageGrades languageGrades;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
