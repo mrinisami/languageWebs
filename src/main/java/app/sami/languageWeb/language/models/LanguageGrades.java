@@ -20,9 +20,7 @@ public class LanguageGrades {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    private UUID userId;
 
     @Enumerated(EnumType.STRING)
     private Language language;

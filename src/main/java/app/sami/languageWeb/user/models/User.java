@@ -40,9 +40,6 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Role userRole;
 
-    @OneToOne(mappedBy = "user")
-    private LanguageGrades languageGrades;
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(userRole.name()));

@@ -5,21 +5,20 @@ import app.sami.languageWeb.language.dtos.LanguagesGradesDto;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.language.repos.Language.LanguageGradesRepository;
 import app.sami.languageWeb.language.services.RequestLanguageGradesService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.websocket.server.PathParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/user-languages")
+@RequestMapping("/users")
 public class LanguageGradesController {
 
     private RequestLanguageGradesService requestLanguageGradesService;
 
-    @GetMapping(":id")
-    public LanguagesGradesDto getUserLanguages(UUID userId){
+    @GetMapping("/:userId/languages")
+    public LanguagesGradesDto getUserLanguages(@PathVariable UUID userId){
         LanguagesGradesDto languagesGradesDto = new LanguagesGradesDto();
         languagesGradesDto.setLanguageGrades(requestLanguageGradesService.userLanguageGrades(userId)
                 .stream().map(this::toLanguageGradesDto).collect(Collectors.toList()));
