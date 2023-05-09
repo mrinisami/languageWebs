@@ -27,17 +27,13 @@ CREATE TABLE texts(
 
 --languages
 
-CREATE TABLE languages(
+CREATE TABLE language_grades(
     id BIGSERIAL PRIMARY KEY,
-    name varchar(25) NOT NULL,
-    short_name varchar(3) NOT NULL
-);
-
-CREATE TABLE languages_spoken(
-    id BIGSERIAL PRIMARY KEY,
-    language_id BIGSERIAL NOT NULL REFERENCES languages(id),
+    language varchar(25) NOT NULL,
     user_id uuid NOT NULL REFERENCES users(id),
-    own_grade numeric(2, 1),
-    admin_grade numeric(2, 1),
-    user_grade numeric(2, 1)
+    own_grade float(53),
+    admin_grade float(53),
+    user_grade float(53),
+    UNIQUE(user_id),
+    UNIQUE(language)
 )
