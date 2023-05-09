@@ -1,5 +1,6 @@
 package app.sami.languageWeb.user.models;
 
+import app.sami.languageWeb.auth.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

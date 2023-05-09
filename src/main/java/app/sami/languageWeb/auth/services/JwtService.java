@@ -1,6 +1,5 @@
 package app.sami.languageWeb.auth.services;
 
-import app.sami.languageWeb.user.models.Role;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
