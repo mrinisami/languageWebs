@@ -4,7 +4,7 @@ import app.sami.languageWeb.auth.AuthenticationResponse;
 import app.sami.languageWeb.dtos.RegisterRequest;
 import app.sami.languageWeb.user.models.Role;
 import app.sami.languageWeb.user.models.User;
-import app.sami.languageWeb.repos.UserRepository;
+import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
