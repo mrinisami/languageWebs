@@ -1,6 +1,6 @@
 package app.sami.languageWeb.user;
 
-import app.sami.languageWeb.repos.UserRepository;
+import app.sami.languageWeb.user.repos.UserRepository;
 import app.sami.languageWeb.user.dto.UserDto;
 import app.sami.languageWeb.user.dto.UsersDto;
 import app.sami.languageWeb.user.models.User;
