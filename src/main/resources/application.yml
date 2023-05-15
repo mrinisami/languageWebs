@@ -1,7 +1,6 @@
 app:
   baseURL: http://localhost:8080
   issuer: ${app.baseURL}
-  password-encoder: noop
   jks:
     filePath: classpath:keystore/keystore.jks
     password: keypass123

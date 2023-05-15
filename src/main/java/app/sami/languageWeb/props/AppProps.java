@@ -18,6 +18,4 @@ public class AppProps {
     public final String baseURL;
     @URL
     public final String issuer;
-    @NotBlank
-    public final String passwordEncoder;
 }
