@@ -1,10 +1,10 @@
 app:
   baseURL: http://localhost:8080
   issuer: ${app.baseURL}
-  secret_key: 2D4B6150645367566B597033733676397924423F4528482B4D6251655468576D
   jks:
     filePath: classpath:keystore/keystore.jks
     password: keypass123
+
 spring:
   security:
     oauth2:
