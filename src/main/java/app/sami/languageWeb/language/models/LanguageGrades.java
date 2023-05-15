@@ -21,6 +21,7 @@ public class LanguageGrades {
     private Long id;
 
     private UUID userId;
+    private UUID emitterUserId;
 
     @Enumerated(EnumType.STRING)
     private Language language;
