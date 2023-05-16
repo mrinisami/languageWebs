@@ -29,11 +29,8 @@ CREATE TABLE texts(
 
 CREATE TABLE language_grades(
     id BIGSERIAL PRIMARY KEY,
-    language varchar(25) NOT NULL,
+    ref_language varchar(25) NOT NULL,
     user_id uuid NOT NULL REFERENCES users(id),
     emitter_user_id uuid NOT NULL REFERENCES users(id),
-    own_grade float(53),
-    admin_grade float(53),
-    user_grade float(53),
-    UNIQUE(language)
+    grade float(53)
 )

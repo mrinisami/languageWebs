@@ -1,6 +1,5 @@
 package app.sami.languageWeb.language.models;
 
-import app.sami.languageWeb.user.models.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +23,6 @@ public class LanguageGrades {
     private UUID emitterUserId;
 
     @Enumerated(EnumType.STRING)
-    private Language language;
-    private Double ownGrade;
-    private Double adminGrade;
-    private Double userGrade;
+    private Language refLanguage;
+    private Double grade;
 }

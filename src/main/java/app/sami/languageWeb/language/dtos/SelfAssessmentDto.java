@@ -4,13 +4,11 @@ import app.sami.languageWeb.language.models.Language;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@Data
 @Builder
-public class LanguageGradesDto {
+public class SelfAssessmentDto {
+    private Double grade;
     private Language language;
-    private double grade;
 }
