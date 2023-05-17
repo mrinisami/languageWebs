@@ -17,8 +17,7 @@ public class WellKnownController {
         return jwtService.getPublicKey();
     }
 
-    @GetMapping("/bonjour")
-    @RolesAllowed(Role.Raw.ADMIN)
+    @GetMapping("/public/bonjour")
     public String getBonjour(){
         return "Bonjour";
     }

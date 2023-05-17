@@ -32,5 +32,6 @@ CREATE TABLE language_grades(
     ref_language varchar(25) NOT NULL,
     user_id uuid NOT NULL REFERENCES users(id),
     emitter_user_id uuid NOT NULL REFERENCES users(id),
-    grade float(53)
+    grade float(53),
+    UNIQUE(user_id, emitter_user_id, ref_language)
 )

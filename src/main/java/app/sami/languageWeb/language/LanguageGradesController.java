@@ -27,7 +27,7 @@ public class LanguageGradesController {
         return languagesGradesDto;
     }
 
-    @GetMapping("/:userId/:language/user-grade")
+    @GetMapping("/{userId}/{language}/user-grade")
     public LanguageGradesStatsDto getAvgUserGrade(@PathVariable UUID userId, @PathVariable String language){
         IGradeStats gradeStats = languageGradesService.getUserGradeStats(userId, Language.valueOf(language));
         LanguageGradesStatsDto languageGradesStatsDto = LanguageGradesStatsDto.builder()

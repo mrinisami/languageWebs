@@ -7,18 +7,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, Long> {
 
+    Optional<LanguageGrades> findByUserId(UUID userId);
+
     @Query(value = "" +
-            "SELECT language " +
+            "SELECT ref_language " +
             "FROM language_grades " +
             "WHERE user_id = :userId " +
-            "AND emitter_user_id = :userId",
+            "AND user_id = emitter_user_id",
     nativeQuery = true)
-    List<LanguageGrades> findUniqueUserLanguages(@Param("userId") UUID userId);
+    Optional<List<LanguageGrades>> findUserLanguages(@Param("userId") UUID userId);
 
     @Query(value = "" +
             "SELECT AVG(lg.grade) AS avgGrade, COUNT(lg.grade) AS gradeCount " +
@@ -29,7 +32,7 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
             "AND lg.user_id = :userId " +
             "AND lg.ref_language = :language",
     nativeQuery = true)
-    IGradeStats gradeStatsByEvaluator(@Param("userId") UUID userId, @Param("language") String language);
+    Optional<IGradeStats> gradeStatsByEvaluator(@Param("userId") UUID userId, @Param("language") String language);
 
     @Query(value = "" +
             "SELECT grade " +
@@ -38,7 +41,7 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
             "AND user_id = :userId " +
             "AND ref_language = :language",
     nativeQuery = true)
-    Double selfAssessmentGrade(@Param("userId") UUID userId, @Param("language") String language);
+    Optional<Double> selfAssessmentGrade(@Param("userId") UUID userId, @Param("language") String language);
 
     @Query(value = "" +
             "SELECT AVG(lg.grade) AS avgGrade, COUNT(lg.grade) AS gradeCount " +
@@ -47,6 +50,6 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
             "AND user_id = :userId " +
             "AND ref_language = :language",
             nativeQuery = true)
-    IGradeStats userGradeStatsByUsers(@Param("userId") UUID userId, @Param("language") String language);
+    Optional<IGradeStats> userGradeStatsByUsers(@Param("userId") UUID userId, @Param("language") String language);
 
 }

@@ -22,21 +22,24 @@ public class LanguageGradesService {
     private final UserRepository userRepository;
 
     public List<LanguageGrades> requestUserLanguageGrades(UUID userId){
-        List<LanguageGrades> languageGrades = languageGradesRepository.findUniqueUserLanguages(userId);
+        List<LanguageGrades> languageGrades = languageGradesRepository.findUserLanguages(userId)
+                .orElseThrow(NotFoundException::new);
 
         return languageGrades;
     }
 
     public IGradeStats getUserGradeStats (UUID userId, Language language){
-        return languageGradesRepository.userGradeStatsByUsers(userId, language.toString());
+        return languageGradesRepository.userGradeStatsByUsers(userId, language.toString()).orElseThrow(NotFoundException::new);
     }
 
     public IGradeStats getUserGradeStatsByEvaluator (UUID userId, Language language){
-        return languageGradesRepository.gradeStatsByEvaluator(userId, language.toString());
+        return languageGradesRepository.gradeStatsByEvaluator(userId, language.toString())
+                .orElseThrow(NotFoundException::new);
     }
 
     public Double getSelfAssessment(UUID userId, Language language){
-        return languageGradesRepository.selfAssessmentGrade(userId, language.toString());
+        return languageGradesRepository.selfAssessmentGrade(userId, language.toString())
+                .orElseThrow(NotFoundException::new);
     }
 
     public LanguageGrades submitUserLanguageGrade(UUID emitterUserId, UUID userId, Language language, double grade){
