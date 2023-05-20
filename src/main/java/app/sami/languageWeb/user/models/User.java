@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -26,7 +27,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User implements UserDetails{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String firstName;
@@ -40,9 +41,10 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Role userRole;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(userRole.name()));
+        return null;
     }
 
     @Override

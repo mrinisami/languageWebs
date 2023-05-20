@@ -1,4 +1,6 @@
 package app.sami.languageWeb.language;
+import app.sami.languageWeb.auth.services.JwtService;
+import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.testUtils.IntegrationTests;
@@ -27,7 +29,8 @@ public class LanguageControllerTests extends IntegrationTests {
 
     @Autowired
     LanguageGradesRepository languageGradesRepository;
-
+    @Autowired
+    private JwtService jwtService;
     private User userTest1;
     private User userTest2;
     private User userTest3;
@@ -74,6 +77,24 @@ public class LanguageControllerTests extends IntegrationTests {
     }
 
     @Test
+    void getUserGradeStatsByEvaluator_ReturnsUserStatsAnd200() throws Exception {
+        UUID userId = userTest1.getId();
+        Language language = Language.ENGLISH;
+        String url = "/public/users/" + userId + "/" + language + "/evaluator-grade";
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.avgGrade").value(75))
+                .andExpect(jsonPath("$.gradeCount").value(2));
+    }
+
+    @Test
+    void givenNoUserGradeStatsByEvaluator_Returns404() throws Exception {
+        String url = "/public/users/" + UUID.randomUUID() + "/" + Language.ENGLISH + "/evaluator-grade";
+        mockMvc.perform(get(url))
+                .andExpect(status().isNotFound());
+
+    }
+    @Test
     void givenWrongRouteReturns4xx()throws Exception{
         Language language = Language.ARABIC;
         UUID userId = UUID.randomUUID();
@@ -90,5 +111,59 @@ public class LanguageControllerTests extends IntegrationTests {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void createLanguageGrade_ReturnsLanguageGradeAnd200() throws Exception {
+        UUID userId = userTest2.getId();
+        UUID emitterId = userTest1.getId();
+        String token = authUser(userTest1);
+        String url = "/users/create-rating";
+        LanguageGradeRequest languageGradeRequest = LanguageGradeRequest
+                .builder()
+                        .grade(grade1)
+                                .emitterUserId(emitterId)
+                                        .language(Language.MACEDONIAN)
+                .userId(userId)
+                                                .build();
+        mockMvc.perform(post(url)
+                        .content(objectMapper.writeValueAsBytes(languageGradeRequest))
+                .header("authorization", "Bearer " + token))
+                .andExpect(status().isOk());
+    }
 
+    @Test
+    void givenNoPriorSelfAssessment_Returns404() throws Exception {
+        UUID userId = userTest2.getId();
+        UUID emitterId = userTest1.getId();
+        String token = authUser(userTest1);
+        String url = "/users/create-rating";
+
+        LanguageGradeRequest languageGradeRequest = LanguageGradeRequest
+                .builder()
+                .language(Language.FINNISH)
+                .emitterUserId(emitterId)
+                .userId(userId)
+                .build();
+
+        mockMvc.perform(post(url)
+                .content(objectMapper.writeValueAsBytes(languageGradeRequest))
+                .header("authorization", "Bearer " + token))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void matchLanguageGrades_Returns200AndTrue() throws Exception {
+        UUID userId = userTest2.getId();
+
+        String url = "/public/users/" + userId + "/languages/grades";
+
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void givenWrongUserLanguageGrades_Returns404() throws Exception {
+        String url = "/public/users/" + UUID.randomUUID() + "/languages/grades";
+
+        mockMvc.perform(get(url))
+                .andExpect(status().isNotFound());
+    }
 }
