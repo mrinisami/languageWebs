@@ -1,8 +1,7 @@
 package app.sami.languageWeb.spring;
 
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
-import app.sami.languageWeb.spring.binds.RequestJwt;
-import app.sami.languageWeb.spring.binds.RequestJwtsubject;
+import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -21,7 +20,7 @@ public class RequestJwtSubArgResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(RequestJwtsubject.class);
+        return parameter.hasParameterAnnotation(RequestJwtSubject.class);
     }
 
     @Override
