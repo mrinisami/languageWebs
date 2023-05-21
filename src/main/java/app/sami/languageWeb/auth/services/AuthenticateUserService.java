@@ -1,7 +1,7 @@
 package app.sami.languageWeb.auth.services;
 
 import app.sami.languageWeb.auth.AuthenticationResponse;
-import app.sami.languageWeb.dtos.AuthenticationRequest;
+import app.sami.languageWeb.auth.dtos.AuthenticationRequest;
 import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.RequiredArgsConstructor;

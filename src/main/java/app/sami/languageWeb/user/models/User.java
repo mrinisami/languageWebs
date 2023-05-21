@@ -1,5 +1,6 @@
 package app.sami.languageWeb.user.models;
 
+import app.sami.languageWeb.auth.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -52,7 +53,7 @@ public class User implements UserDetails{
 
     @Override
     public String getUsername() {
-        return id.toString();
+        return email;
     }
 
     @Override

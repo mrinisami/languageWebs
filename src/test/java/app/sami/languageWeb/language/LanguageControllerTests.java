@@ -49,7 +49,7 @@ public class LanguageControllerTests extends IntegrationTests {
         userTest3 = userRepository.save(UserFactory.userGenerator());
         userEvaluator = userRepository.save(UserFactory.evaluatorGenerator());
         userEvaluator2 = userRepository.save(UserFactory.evaluatorGenerator());
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
+        languageGradesTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
                 userTest1.getId(), userTest2.getId(), grade1, Language.ARABIC));
         languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
                 userTest1.getId(), userTest3.getId(), grade2, Language.ARABIC));
@@ -165,5 +165,27 @@ public class LanguageControllerTests extends IntegrationTests {
 
         mockMvc.perform(get(url))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenEmitterIsDifferentFromUserAuth_Returns403() throws Exception {
+        String url = "/users/modify-language-grade";
+        String token = authUser(userTest1);
+
+        mockMvc.perform(put(url)
+                .content(objectMapper.writeValueAsBytes(DtoTransformations.toLanguageGradeRequest(languageGradesTest1)))
+                        .header("authorization", "Bearer " + token))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void validRequestEditLanguage_Returns200() throws Exception {
+        String url = "/users/modify-language-grade";
+        String token = authUser(userTest2);
+
+        mockMvc.perform(put(url)
+                        .content(objectMapper.writeValueAsBytes(DtoTransformations.toLanguageGradeRequest(languageGradesTest1)))
+                        .header("authorization", "Bearer " + token))
+                .andExpect(status().isOk());
     }
 }

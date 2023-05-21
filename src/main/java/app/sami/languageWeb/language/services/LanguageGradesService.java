@@ -9,6 +9,7 @@ import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.language.LanguageGradesRepository;
+import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,11 +76,12 @@ public class LanguageGradesService {
         return languageGrades;
     }
 
-    public LanguageGrades editUserLanguageGrade(long id, double grade, UUID userId){
-        LanguageGrades languageGrades = languageGradesRepository.findById(id)
+    public LanguageGrades editUserLanguageGrade(LanguageGradeRequest languageGradeRequest, String subject){
+        LanguageGrades languageGrades = languageGradesRepository.findById(languageGradeRequest.getId())
                 .orElseThrow(NotFoundException::new);
-        if (userId != languageGrades.getUserId()) throw new UserNotAllowedException();
-        languageGrades.setGrade(grade);
+        User user = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
+        if (user.getId() != languageGrades.getEmitterUserId()) throw new UserNotAllowedException();
+        languageGrades.setGrade(languageGradeRequest.getGrade());
         languageGradesRepository.save(languageGrades);
 
         return languageGrades;

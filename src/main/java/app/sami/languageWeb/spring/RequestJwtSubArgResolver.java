@@ -24,7 +24,7 @@ public class RequestJwtSubArgResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public String resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         return requestJwtClaimsExtractor.extract().flatMap(RequestJwtClaims::getSubject)
                 .orElseThrow(UserNotAllowedException::new);
     }

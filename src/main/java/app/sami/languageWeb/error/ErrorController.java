@@ -17,6 +17,6 @@ public class ErrorController {
     }
 
     @ExceptionHandler({UserNotAllowedException.class})
-    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public Error.Response unauthorized(Exception ex) {return new Error.Response(ex.getMessage());}
 }

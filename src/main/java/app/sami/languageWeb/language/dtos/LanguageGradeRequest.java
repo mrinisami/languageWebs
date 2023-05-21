@@ -15,4 +15,5 @@ public class LanguageGradeRequest {
     UUID emitterUserId;
     Double grade;
     Language language;
+    Long id;
 }

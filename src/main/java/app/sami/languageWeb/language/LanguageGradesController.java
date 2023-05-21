@@ -5,6 +5,7 @@ import app.sami.languageWeb.language.dtos.*;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.language.services.LanguageGradesService;
+import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -65,6 +66,11 @@ public class LanguageGradesController {
         return new LanguagesAllGradesDto(languageGrades);
     }
 
+    @PutMapping("/users/modify-language-grade")
+    public LanguageGradesDto editLanguageGrade(@RequestJwtSubject String subject, @RequestBody LanguageGradeRequest languageGradeRequest){
+
+        return toLanguageGradesDto(languageGradesService.editUserLanguageGrade(languageGradeRequest, subject));
+    }
 
     private LanguageGradesDto toLanguageGradesDto(LanguageGrades languageGrades){
         LanguageGradesDto languageGradesDto = LanguageGradesDto.builder()
