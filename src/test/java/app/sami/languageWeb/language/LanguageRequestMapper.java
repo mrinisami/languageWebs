@@ -3,7 +3,7 @@ package app.sami.languageWeb.language;
 import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
 import app.sami.languageWeb.language.models.LanguageGrades;
 
-public class DtoTransformations {
+public class LanguageRequestMapper {
 
     public static LanguageGradeRequest toLanguageGradeRequest(LanguageGrades languageGrades){
         return LanguageGradeRequest

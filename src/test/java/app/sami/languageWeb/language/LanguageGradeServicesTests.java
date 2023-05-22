@@ -65,7 +65,7 @@ public class LanguageGradeServicesTests extends IntegrationTests {
     @Test
     void givenUnauthorizedUserEditLanguage_ThrowsUnauthorizedError() {
         languageGradesTest1.setGrade(55.0);
-        LanguageGradeRequest languageGradeRequest = toLanguageGradeRequest(languageGradesTest1);
+        LanguageGradeRequest languageGradeRequest = LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1);
         String userEmail = userEvaluator.getEmail();
         assertThrows(UserNotAllowedException.class,
                 () -> languageGradesService.editUserLanguageGrade(languageGradeRequest, userEmail));
@@ -75,20 +75,11 @@ public class LanguageGradeServicesTests extends IntegrationTests {
     void matchingLanguageGradesAfterEdit_ReturnsTrue(){
         languageGradesTest1.setGrade(55.0);
         LanguageGrades expected = languageGradesTest1;
-        LanguageGradeRequest languageGradeRequest = toLanguageGradeRequest(languageGradesTest1);
+        LanguageGradeRequest languageGradeRequest = LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1);
         String userEmail = userTest2.getEmail();
         LanguageGrades result = languageGradesService.editUserLanguageGrade(languageGradeRequest, userEmail);
 
         assertThat(result).isEqualTo(expected);
     }
-    private LanguageGradeRequest toLanguageGradeRequest(LanguageGrades languageGrades) {
-        return LanguageGradeRequest
-                .builder()
-                .userId(languageGrades.getUserId())
-                .emitterUserId(languageGrades.getEmitterUserId())
-                .language(languageGrades.getRefLanguage())
-                .id(languageGrades.getId())
-                .grade(languageGrades.getGrade())
-                .build();
-    }
+
 }

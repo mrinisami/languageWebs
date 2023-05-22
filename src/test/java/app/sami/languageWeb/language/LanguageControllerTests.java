@@ -7,12 +7,10 @@ import app.sami.languageWeb.testUtils.IntegrationTests;
 import app.sami.languageWeb.testUtils.factories.LanguageGradesFactory;
 import app.sami.languageWeb.testUtils.factories.UserFactory;
 import app.sami.languageWeb.user.models.User;
-import app.sami.languageWeb.language.LanguageGradesRepository;
 import app.sami.languageWeb.user.repos.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.UUID;
 
@@ -173,7 +171,7 @@ public class LanguageControllerTests extends IntegrationTests {
         String token = authUser(userTest1);
 
         mockMvc.perform(put(url)
-                .content(objectMapper.writeValueAsBytes(DtoTransformations.toLanguageGradeRequest(languageGradesTest1)))
+                .content(objectMapper.writeValueAsBytes(LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1)))
                         .header("authorization", "Bearer " + token))
                 .andExpect(status().isForbidden());
     }
@@ -184,7 +182,7 @@ public class LanguageControllerTests extends IntegrationTests {
         String token = authUser(userTest2);
 
         mockMvc.perform(put(url)
-                        .content(objectMapper.writeValueAsBytes(DtoTransformations.toLanguageGradeRequest(languageGradesTest1)))
+                        .content(objectMapper.writeValueAsBytes(LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1)))
                         .header("authorization", "Bearer " + token))
                 .andExpect(status().isOk());
     }
