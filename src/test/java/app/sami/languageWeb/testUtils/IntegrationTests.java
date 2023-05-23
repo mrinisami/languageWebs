@@ -4,6 +4,7 @@ import app.sami.languageWeb.config.TestConfig;
 import app.sami.languageWeb.auth.dtos.AuthenticationRequest;
 import app.sami.languageWeb.auth.dtos.TokenDto;
 import app.sami.languageWeb.user.models.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,17 @@ public abstract class IntegrationTests {
         return MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON);
     }
 
+    protected MockHttpServletRequestBuilder post(String url, Object body, String token) throws JsonProcessingException {
+        return MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(body))
+                .header("authorization", "Bearer " + token);
+    }
+
+    protected MockHttpServletRequestBuilder put(String url, Object body, String token) throws JsonProcessingException {
+        return MockMvcRequestBuilders.put(url).contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(body))
+                .header("authorization", "Bearer " + token);
+    }
     protected MockHttpServletRequestBuilder put(String url){
         return MockMvcRequestBuilders.put(url).contentType(MediaType.APPLICATION_JSON);
     }

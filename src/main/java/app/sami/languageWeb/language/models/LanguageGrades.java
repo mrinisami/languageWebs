@@ -1,15 +1,13 @@
 package app.sami.languageWeb.language.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@With
 @Builder
 @Data
 @Table

@@ -25,8 +25,8 @@ public class Randomize {
         return generatedString;
     }
 
-    public static double grade(){
-        return ThreadLocalRandom.current().nextDouble(0, 10);
+    public static Double grade(){
+        return ThreadLocalRandom.current().nextDouble(0, 100);
     }
 
     public static Language language(){

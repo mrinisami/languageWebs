@@ -1,12 +1,9 @@
 package app.sami.languageWeb.language;
 
-import app.sami.languageWeb.auth.Role;
 import app.sami.languageWeb.language.dtos.*;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
-import app.sami.languageWeb.language.services.LanguageGradesService;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
-import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,48 +25,31 @@ public class LanguageGradesController {
         return languagesGradesDto;
     }
 
-    @GetMapping("/public/users/{userId}/{language}/user-grade")
-    public LanguageGradesStatsDto getAvgUserGrade(@PathVariable UUID userId, @PathVariable String language){
-        IGradeStats gradeStats = languageGradesService.getUserGradeStats(userId, Language.valueOf(language));
-        LanguageGradesStatsDto languageGradesStatsDto = LanguageGradesStatsDto.builder()
-                .language(Language.valueOf(language))
-                .avgGrade(gradeStats.getAvgGrade())
-                .gradeCount(gradeStats.getGradeCount())
-                .build();
-        return languageGradesStatsDto;
-    }
-
-    @PostMapping("/users/create-rating")
-    @RolesAllowed({Role.Raw.EVALUATOR, Role.Raw.USER})
-    public LanguageGradesDto createUserLanguageGrade(@RequestBody LanguageGradeRequest languageGradeRequest){
+    @PostMapping("/users/{userId}/languages/{language}/grades")
+    public LanguageGradesDto createUserLanguageGrade(@RequestJwtSubject String subject,
+                                                     @RequestBody LanguageGradeRequest languageGradeRequest,
+                                                     @PathVariable UUID userId,
+                                                     @PathVariable String language){
             LanguageGradesDto languageGradesDto = toLanguageGradesDto
-                    (languageGradesService.submitUserLanguageGrade(languageGradeRequest));
+                    (languageGradesService.submitUserLanguageGrade(languageGradeRequest, subject, Language.valueOf(language), userId));
             return languageGradesDto;
     }
 
-    @GetMapping("/public/users/{userId}/{language}/evaluator-grade")
-    public LanguageGradesStatsDto getUserGradeStatsByEvaluator(@PathVariable UUID userId, @PathVariable String language){
-        IGradeStats gradeStats = languageGradesService.getUserGradeStatsByEvaluator(userId, Language.valueOf(language));
-        LanguageGradesStatsDto languageGradesStatsDto = LanguageGradesStatsDto.builder()
-                .language(Language.valueOf(language))
-                .avgGrade(gradeStats.getAvgGrade())
-                .gradeCount(gradeStats.getGradeCount())
-                .build();
-        return languageGradesStatsDto;
-    }
-
-    @GetMapping("/public/users/{userId}/languages/grades")
+    @GetMapping("/public/users/{userId}/languageGrades/summary")
     public LanguagesAllGradesDto getUserLanguagesGrades(@PathVariable UUID userId){
-        List<IAllGradeStats> gradeStats = languageGradesService.getAllUserGrandStats(userId);
+        List<GradeStatsSummary> gradeStats = languageGradesService.getAllUserGrandStats(userId);
         List<LanguageAllGradesDto> languageGrades = gradeStats.stream().map(this::toLanguageAllGradesDto).collect(Collectors.toList());
 
         return new LanguagesAllGradesDto(languageGrades);
     }
 
-    @PutMapping("/users/modify-language-grade")
-    public LanguageGradesDto editLanguageGrade(@RequestJwtSubject String subject, @RequestBody LanguageGradeRequest languageGradeRequest){
+    @PutMapping("/users/{userId}/languageGrade/{languageGradeId}")
+    public LanguageGradesDto editLanguageGrade(@RequestJwtSubject String subject,
+                                               @RequestBody LanguageGradeRequest languageGradeRequest,
+                                               @PathVariable UUID userId,
+                                               @PathVariable Long languageGradeId){
 
-        return toLanguageGradesDto(languageGradesService.editUserLanguageGrade(languageGradeRequest, subject));
+        return toLanguageGradesDto(languageGradesService.editUserLanguageGrade(languageGradeRequest, subject, languageGradeId));
     }
 
     private LanguageGradesDto toLanguageGradesDto(LanguageGrades languageGrades){
@@ -80,7 +60,7 @@ public class LanguageGradesController {
        return languageGradesDto;
     }
 
-    private LanguageAllGradesDto toLanguageAllGradesDto(IAllGradeStats gradeStats){
+    private LanguageAllGradesDto toLanguageAllGradesDto(GradeStatsSummary gradeStats){
         return LanguageAllGradesDto.builder()
                 .evaluatorGrade(gradeStats.getEvalGrade())
                 .userGrade(gradeStats.getUserGrade())

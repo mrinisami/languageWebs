@@ -8,15 +8,16 @@ import app.sami.languageWeb.user.repos.UserRepository;
 
 import java.util.UUID;
 
+
 public class LanguageGradesFactory {
 
-    public static LanguageGrades generateFromUsers(UUID reviewedId, UUID reviewerId, double grade, Language language){
+    public static LanguageGrades generateFromUsers(){
 
         return LanguageGrades.builder()
-                .grade(grade)
-                .emitterUserId(reviewerId)
-                .userId(reviewedId)
-                .refLanguage(language)
+                .grade(Randomize.grade())
+                .emitterUserId(UUID.randomUUID())
+                .userId(UUID.randomUUID())
+                .refLanguage(Randomize.language())
                 .build();
     }
 }

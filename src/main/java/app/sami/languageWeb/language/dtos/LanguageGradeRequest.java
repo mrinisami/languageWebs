@@ -1,19 +1,14 @@
 package app.sami.languageWeb.language.dtos;
 
-import app.sami.languageWeb.language.models.Language;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.UUID;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class LanguageGradeRequest {
-    UUID userId;
-    UUID emitterUserId;
-    Double grade;
-    Language language;
-    Long id;
+    private Double grade;
 }

@@ -1,4 +1,5 @@
 package app.sami.languageWeb.language;
+
 import app.sami.languageWeb.auth.services.JwtService;
 import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
 import app.sami.languageWeb.language.models.Language;
@@ -14,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -36,75 +35,33 @@ public class LanguageControllerTests extends IntegrationTests {
     private User userEvaluator2;
     private LanguageGrades languageGradesTest1;
     private LanguageGrades languageGradesTest2;
-    private Double grade1 = 50.0;
-    private Double grade2 = 100.0;
+    private final Double grade1 = 50.0;
+    private final Double grade2 = 100.0;
     @BeforeEach
     void setup(){
-        languageGradesRepository.deleteAll();
-        userRepository.deleteAll();
         userTest1 = userRepository.save(UserFactory.userGenerator());
         userTest2 = userRepository.save(UserFactory.userGenerator());
         userTest3 = userRepository.save(UserFactory.userGenerator());
         userEvaluator = userRepository.save(UserFactory.evaluatorGenerator());
         userEvaluator2 = userRepository.save(UserFactory.evaluatorGenerator());
-        languageGradesTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userTest2.getId(), grade1, Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userTest3.getId(), grade2, Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userEvaluator.getId(), grade2, Language.ENGLISH));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userEvaluator2.getId(), grade1, Language.ENGLISH));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest1.getId(), grade1, Language.ROMANIAN));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest2.getId(), grade1, Language.MACEDONIAN));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest2.getId(), grade1, Language.FAROESE));
-    }
-
-    @Test
-    void getUserGradeStats_ReturnsUserStatsAnd200() throws Exception {
-
-        Language language = Language.ARABIC;
-        UUID userId = userTest1.getId();
-        String url = "/public/users/" + userId +  "/" + language + "/user-grade";
-        mockMvc.perform(get(url))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.avgGrade").value(75));
-    }
-
-    @Test
-    void getUserGradeStatsByEvaluator_ReturnsUserStatsAnd200() throws Exception {
-        UUID userId = userTest1.getId();
-        Language language = Language.ENGLISH;
-        String url = "/public/users/" + userId + "/" + language + "/evaluator-grade";
-        mockMvc.perform(get(url))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.avgGrade").value(75))
-                .andExpect(jsonPath("$.gradeCount").value(2));
-    }
-
-    @Test
-    void givenNoUserGradeStatsByEvaluator_Returns404() throws Exception {
-        String url = "/public/users/" + UUID.randomUUID() + "/" + Language.ENGLISH + "/evaluator-grade";
-        mockMvc.perform(get(url))
-                .andExpect(status().isNotFound());
-
-    }
-    @Test
-    void givenWrongRouteReturns4xx()throws Exception{
-        Language language = Language.ARABIC;
-        UUID userId = UUID.randomUUID();
-        String url = "/public/users/" + userId +  "/" + language + "/user-grades";
-        mockMvc.perform(get(url))
-                .andExpect(status().is4xxClientError());
+        languageGradesTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
+                .withEmitterUserId(userTest2.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC));
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withEmitterUserId(userTest3.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC));
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withEmitterUserId(userTest2.getId())
+                .withUserId(userTest2.getId())
+                .withRefLanguage(Language.MACEDONIAN));
     }
 
     @Test
     void getUserLanguages_ReturnsLanguageGradesListAnd200() throws Exception{
         UUID userId = userTest2.getId();
-        String url = "/public/users/" + userId + "/languages";
+        String url = String.format("/public/users/%s/languages", userId);
         mockMvc.perform(get(url))
                 .andExpect(status().isOk());
     }
@@ -112,20 +69,12 @@ public class LanguageControllerTests extends IntegrationTests {
     @Test
     void createLanguageGrade_ReturnsLanguageGradeAnd200() throws Exception {
         UUID userId = userTest2.getId();
-        UUID emitterId = userTest1.getId();
         String token = authUser(userTest1);
-        String url = "/users/create-rating";
-        LanguageGradeRequest languageGradeRequest = LanguageGradeRequest
-                .builder()
-                        .grade(grade1)
-                                .emitterUserId(emitterId)
-                                        .language(Language.MACEDONIAN)
-                .userId(userId)
-                                                .build();
-        mockMvc.perform(post(url)
-                        .content(objectMapper.writeValueAsBytes(languageGradeRequest))
-                .header("authorization", "Bearer " + token))
+        String url = String.format("/users/%s/languages/%s/grades", userId, Language.MACEDONIAN);
+        LanguageGradeRequest languageGradeRequest = new LanguageGradeRequest(grade2);
+        mockMvc.perform(post(url, languageGradeRequest, token))
                 .andExpect(status().isOk());
+
     }
 
     @Test
@@ -133,18 +82,11 @@ public class LanguageControllerTests extends IntegrationTests {
         UUID userId = userTest2.getId();
         UUID emitterId = userTest1.getId();
         String token = authUser(userTest1);
-        String url = "/users/create-rating";
+        String url = String.format("/users/%s/languages/%s/grades", userId, Language.FULA);
 
-        LanguageGradeRequest languageGradeRequest = LanguageGradeRequest
-                .builder()
-                .language(Language.FINNISH)
-                .emitterUserId(emitterId)
-                .userId(userId)
-                .build();
+        LanguageGradeRequest languageGradeRequest = new LanguageGradeRequest(grade1);
 
-        mockMvc.perform(post(url)
-                .content(objectMapper.writeValueAsBytes(languageGradeRequest))
-                .header("authorization", "Bearer " + token))
+        mockMvc.perform(post(url, languageGradeRequest, token))
                 .andExpect(status().isNotFound());
     }
 
@@ -152,7 +94,7 @@ public class LanguageControllerTests extends IntegrationTests {
     void matchLanguageGrades_Returns200AndTrue() throws Exception {
         UUID userId = userTest2.getId();
 
-        String url = "/public/users/" + userId + "/languages/grades";
+        String url = String.format("/public/users/%s/languageGrades/summary", userId);
 
         mockMvc.perform(get(url))
                 .andExpect(status().isOk());
@@ -167,23 +109,21 @@ public class LanguageControllerTests extends IntegrationTests {
 
     @Test
     void givenEmitterIsDifferentFromUserAuth_Returns403() throws Exception {
-        String url = "/users/modify-language-grade";
+        UUID userId = userTest2.getId();
+        String url = String.format("/users/%s/languageGrade/%s", userId, languageGradesTest1.getId());
         String token = authUser(userTest1);
 
-        mockMvc.perform(put(url)
-                .content(objectMapper.writeValueAsBytes(LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1)))
-                        .header("authorization", "Bearer " + token))
+        mockMvc.perform(put(url, new LanguageGradeRequest(languageGradesTest1.getGrade()), token))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void validRequestEditLanguage_Returns200() throws Exception {
-        String url = "/users/modify-language-grade";
+        UUID userId = userTest2.getId();
+        String url = String.format("/users/%s/languageGrade/%s", userId, languageGradesTest1.getId());
         String token = authUser(userTest2);
 
-        mockMvc.perform(put(url)
-                        .content(objectMapper.writeValueAsBytes(LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1)))
-                        .header("authorization", "Bearer " + token))
+        mockMvc.perform(put(url, new LanguageGradeRequest(57.0), token))
                 .andExpect(status().isOk());
     }
 }

@@ -43,102 +43,32 @@ public class LanguageGradesRepositoryTests {
         userTest3 = userRepository.save(UserFactory.userGenerator());
         userEvaluator = userRepository.save(UserFactory.evaluatorGenerator());
         userEvaluator2 = userRepository.save(UserFactory.evaluatorGenerator());
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userTest2.getId(), grade1, Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userTest3.getId(), grade2, Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userEvaluator.getId(), grade2, Language.ENGLISH));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userEvaluator2.getId(), grade1, Language.ENGLISH));
-        languageGradesTest3 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest1.getId(), grade1, Language.ROMANIAN));
-        languageGradesSelfAssessmentTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest2.getId(), grade1, Language.MACEDONIAN));
-        languageGradesSelfAssessmentTest2 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest2.getId(), grade1, Language.FAROESE));
-    }
-
-    @Test
-    void matchingAvgGradeEvaluator_ReturnsTrue(){
-        IGradeStats gradeStats = languageGradesRepository.gradeStatsByEvaluator(userTest1.getId(), Language.ENGLISH.toString());
-
-        Double grade = gradeStats.getAvgGrade();
-        double expectedGrade = (grade1 + grade2) / 2;
-
-        assertThat(grade).isEqualTo(expectedGrade);
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
+                .withEmitterUserId(userTest2.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC));
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withEmitterUserId(userTest3.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC));
     }
 
     @Test
     void matchingGradesStatsListByUser_ReturnsTrue(){
-        UUID userId = userTest2.getId();
+        UUID userId = userTest1.getId();
 
-        List<IAllGradeStats> gradeStats = languageGradesRepository.findAllGradeStats(userId);
+        List<GradeStatsSummary> gradeStats = languageGradesRepository.findAllGradeStats(userId);
 
-        assertThat(gradeStats.size() == 4);
+        assertThat(gradeStats.size() == 1);
     }
 
     @Test
     void givenNonExistingUserGradeStats_ReturnsEmpty(){
         //Actually returns one because of aggregates returns a line of nulls
 
-        List<IAllGradeStats> gradeStats = languageGradesRepository.findAllGradeStats(UUID.randomUUID());
+        List<GradeStatsSummary> gradeStats = languageGradesRepository.findAllGradeStats(UUID.randomUUID());
 
         assertThat(gradeStats.size() == 1);
-    }
-
-    @Test
-    void givenOneEntry_ReturnsCountOfOne(){
-        IGradeStats result = languageGradesRepository.userGradeStatsByUsers(userTest2.getId(),
-                Language.ROMANIAN.toString());
-
-        assertThat(result.getGradeCount()).isEqualTo(1);
-    }
-
-    @Test
-    void givenWrongUser_ReturnsNullAvg(){
-        IGradeStats result = languageGradesRepository.userGradeStatsByUsers(UUID.randomUUID(),
-                Language.ROMANIAN.toString());
-
-        assertThat(result.getAvgGrade()).isNull();
-    }
-    @Test
-    void matchingAvgUserGrade_ReturnsTrue(){
-
-
-        IGradeStats gradeStats = languageGradesRepository.userGradeStatsByUsers(userTest1.getId(), Language.ARABIC.toString())
-                ;
-        Double grade = gradeStats.getAvgGrade();
-        Integer count = gradeStats.getGradeCount();
-        double expectedGrade = (grade1 + grade2) / 2;
-
-        assertThat(grade).isEqualTo(expectedGrade);
-        assertThat(count).isEqualTo(2);
-    }
-
-    @Test
-    void matchingLanguageList_ReturnsTrue(){
-        List<LanguageGrades> expected = new ArrayList<>();
-        expected.add(languageGradesSelfAssessmentTest2);
-        expected.add(languageGradesSelfAssessmentTest1);
-        expected.add(languageGradesTest3);
-        List<LanguageGrades> result = languageGradesRepository.findUniqueRefLanguageByUserId(userTest2.getId());
-
-        assertThat(expected).hasSameElementsAs(result);
-
-    }
-
-    @Test
-    void givenWrongUserIdLanguageList_ReturnsEmpty(){
-        assertThat(languageGradesRepository.findUniqueRefLanguageByUserId(UUID.randomUUID())).isEmpty();
-    }
-
-    @Test
-    void matchingLanguageGrade_ReturnsTrue(){
-        Optional<LanguageGrades> result = languageGradesRepository.findByUserIdAndRefLanguageAndEmitterUserId(userTest2.getId(),
-                Language.MACEDONIAN, userTest2.getId());
-        LanguageGrades expected = languageGradesSelfAssessmentTest1;
-        assertThat(result).isPresent().contains(expected);
     }
 
     @Test

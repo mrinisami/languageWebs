@@ -2,9 +2,9 @@ package app.sami.languageWeb.language;
 
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
+import app.sami.languageWeb.language.mapper.LanguageRequestMapper;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
-import app.sami.languageWeb.language.services.LanguageGradesService;
 import app.sami.languageWeb.testUtils.IntegrationTests;
 import app.sami.languageWeb.testUtils.Randomize;
 import app.sami.languageWeb.testUtils.factories.LanguageGradesFactory;
@@ -16,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.UUID;
 
 public class LanguageGradeServicesTests extends IntegrationTests {
     @Autowired
@@ -46,20 +44,14 @@ public class LanguageGradeServicesTests extends IntegrationTests {
         userTest3 = userRepository.save(UserFactory.userGenerator());
         userEvaluator = userRepository.save(UserFactory.evaluatorGenerator());
         userEvaluator2 = userRepository.save(UserFactory.evaluatorGenerator());
-        languageGradesTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userTest2.getId(), grade1, Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userTest3.getId(), grade2, Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userEvaluator.getId(), grade2, Language.ENGLISH));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest1.getId(), userEvaluator2.getId(), grade1, Language.ENGLISH));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest1.getId(), grade1, Language.ROMANIAN));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest2.getId(), grade1, Language.MACEDONIAN));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers(
-                userTest2.getId(), userTest2.getId(), grade1, Language.FAROESE));
+        languageGradesTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
+                .withEmitterUserId(userTest2.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC));
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withEmitterUserId(userTest3.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC));
     }
 
     @Test
@@ -68,7 +60,7 @@ public class LanguageGradeServicesTests extends IntegrationTests {
         LanguageGradeRequest languageGradeRequest = LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1);
         String userEmail = userEvaluator.getEmail();
         assertThrows(UserNotAllowedException.class,
-                () -> languageGradesService.editUserLanguageGrade(languageGradeRequest, userEmail));
+                () -> languageGradesService.editUserLanguageGrade(languageGradeRequest, userEmail, languageGradesTest1.getId()));
     }
 
     @Test
@@ -77,7 +69,8 @@ public class LanguageGradeServicesTests extends IntegrationTests {
         LanguageGrades expected = languageGradesTest1;
         LanguageGradeRequest languageGradeRequest = LanguageRequestMapper.toLanguageGradeRequest(languageGradesTest1);
         String userEmail = userTest2.getEmail();
-        LanguageGrades result = languageGradesService.editUserLanguageGrade(languageGradeRequest, userEmail);
+        LanguageGrades result = languageGradesService.editUserLanguageGrade(languageGradeRequest, userEmail,
+                languageGradesTest1.getId());
 
         assertThat(result).isEqualTo(expected);
     }

@@ -2,7 +2,7 @@ package app.sami.languageWeb.language;
 
 import app.sami.languageWeb.language.models.Language;
 
-public interface IAllGradeStats {
+public interface GradeStatsSummary {
 
     Double getEvalGrade();
     Double getUserGrade();

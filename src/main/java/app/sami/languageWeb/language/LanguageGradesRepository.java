@@ -20,17 +20,6 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
     List<LanguageGrades> findUniqueRefLanguageByUserId(UUID userId);
 
     @Query(value = "" +
-            "SELECT AVG(lg.grade) AS avgGrade, COUNT(lg.grade) AS gradeCount " +
-            "FROM language_grades as lg " +
-            "JOIN users as emitting_user " +
-            "on lg.emitter_user_id = emitting_user.id " +
-            "WHERE emitting_user.user_role = 'EVALUATOR' " +
-            "AND lg.user_id = :userId " +
-            "AND lg.ref_language = :language",
-    nativeQuery = true)
-    IGradeStats gradeStatsByEvaluator(@Param("userId") UUID userId, @Param("language") String language);
-
-    @Query(value = "" +
             "WITH evaltable AS " +
             "(SELECT  AVG(lg.grade) AS eval_grade, lg.ref_language " +
             "FROM language_grades AS lg " +
@@ -58,24 +47,7 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
             "full OUTER JOIN self_assessment AS sa " +
             "ON et.ref_language = sa.ref_language",
             nativeQuery = true)
-    List<IAllGradeStats> findAllGradeStats(@Param("userId") UUID userId);
+    List<GradeStatsSummary> findAllGradeStats(@Param("userId") UUID userId);
 
-    @Query(value = "" +
-            "SELECT grade " +
-            "FROM language_grades " +
-            "WHERE emitter_user_id = user_id " +
-            "AND user_id = :userId " +
-            "AND ref_language = :language",
-    nativeQuery = true)
-    Optional<Double> selfAssessmentGrade(@Param("userId") UUID userId, @Param("language") String language);
-
-    @Query(value = "" +
-            "SELECT AVG(lg.grade) AS avgGrade, COUNT(lg.grade) AS gradeCount " +
-            "FROM language_grades AS lg " +
-            "WHERE emitter_user_id != user_id " +
-            "AND user_id = :userId " +
-            "AND ref_language = :language",
-            nativeQuery = true)
-    IGradeStats userGradeStatsByUsers(@Param("userId") UUID userId, @Param("language") String language);
 
 }

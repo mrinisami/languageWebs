@@ -1,6 +1,6 @@
 package app.sami.languageWeb.language;
 
-public interface IGradeStats {
+public interface GradeStats {
     Double getAvgGrade();
     Integer getGradeCount();
 

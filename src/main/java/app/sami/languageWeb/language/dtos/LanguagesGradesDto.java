@@ -1,6 +1,5 @@
 package app.sami.languageWeb.language.dtos;
 
-import app.sami.languageWeb.language.models.LanguageGrades;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
