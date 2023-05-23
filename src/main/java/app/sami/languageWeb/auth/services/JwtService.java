@@ -1,6 +1,7 @@
 package app.sami.languageWeb.auth.services;
 
-import app.sami.languageWeb.user.models.Role;
+import app.sami.languageWeb.auth.Role;
+import app.sami.languageWeb.user.models.User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -10,7 +11,6 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -24,15 +24,15 @@ public class JwtService {
     public Map<String, Object> getPublicKey(){
         return jwkSet.toJSONObject(true);
     }
-    public String generateToken(UserDetails userDetails){
-        return generateToken(userDetails, new HashMap<>());
+    public String generateToken(User user){
+        return generateToken(user, new HashMap<>());
     }
-    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims){
+    public String generateToken(User user, Map<String, Object> extraClaims){
         JWTClaimsSet claims = new JWTClaimsSet.Builder().jwtID(UUID.randomUUID().toString())
-                .subject(userDetails.getUsername())
+                .subject(user.getUsername())
                 .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)))
                 .issueTime(Date.from(Instant.now()))
-                .claim("roles", Arrays.asList("USER"))
+                .claim("roles", user.getUserRole().impliedRoles(user.getUserRole()))
                 .issuer(issuer)
                 .build();
         JWSHeader headers = new JWSHeader.Builder(JWSAlgorithm.RS256)
@@ -41,6 +41,8 @@ public class JwtService {
                 .build();
         return sign(headers, claims);
     }
+
+
 
     private String sign(JWSHeader headers, JWTClaimsSet claims) {
         SignedJWT signedJWT = new SignedJWT(headers, claims);

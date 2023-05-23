@@ -1,8 +1,8 @@
 package app.sami.languageWeb.auth;
 
 import app.sami.languageWeb.auth.services.RegisterNewUserService;
-import app.sami.languageWeb.dtos.AuthenticationRequest;
-import app.sami.languageWeb.dtos.RegisterRequest;
+import app.sami.languageWeb.auth.dtos.AuthenticationRequest;
+import app.sami.languageWeb.auth.dtos.RegisterRequest;
 import app.sami.languageWeb.auth.services.AuthenticateUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

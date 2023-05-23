@@ -1,5 +1,8 @@
+server:
+  port: 7777
+
 app:
-  baseURL: http://localhost:8080
+  baseURL: http://localhost:${server.port}
   issuer: ${app.baseURL}
   jks:
     filePath: classpath:keystore/keystore.jks

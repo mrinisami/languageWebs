@@ -1,5 +1,4 @@
-package app.sami.languageWeb.dtos;
-
+package app.sami.languageWeb.auth.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,9 +8,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequest {
-    private String firstName;
-    private String lastName;
+
+public class AuthenticationRequest {
     private String email;
     private String userPassword;
 }

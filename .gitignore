@@ -3,6 +3,7 @@
 !gradle/**
 !src/
 !src/**
+!ui/**
 !.gitignore
 !build.gradle
 !docker-compose.yml
@@ -10,3 +11,4 @@
 !gradlew.bat
 !README.md
 !settings.gradle
+

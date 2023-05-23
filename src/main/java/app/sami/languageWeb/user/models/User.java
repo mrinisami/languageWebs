@@ -1,5 +1,6 @@
 package app.sami.languageWeb.user.models;
 
+import app.sami.languageWeb.auth.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +26,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User implements UserDetails{
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String firstName;
@@ -38,9 +40,10 @@ public class User implements UserDetails{
     @Enumerated(EnumType.STRING)
     private Role userRole;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(userRole.name()));
+        return null;
     }
 
     @Override
@@ -50,7 +53,7 @@ public class User implements UserDetails{
 
     @Override
     public String getUsername() {
-        return id.toString();
+        return email;
     }
 
     @Override
