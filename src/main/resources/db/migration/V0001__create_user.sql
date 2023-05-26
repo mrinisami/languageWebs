@@ -31,6 +31,7 @@ CREATE TABLE texts(
 CREATE TABLE language_grades(
     id BIGSERIAL PRIMARY KEY,
     ref_language varchar(25) NOT NULL,
+    translated_language varchar(25) NOT NULL,
     user_id uuid NOT NULL REFERENCES users(id),
     emitter_user_id uuid NOT NULL REFERENCES users(id),
     grade float(53),

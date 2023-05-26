@@ -6,6 +6,10 @@ import app.sami.languageWeb.language.models.LanguageGrades;
 public class LanguageRequestMapper {
 
     public static LanguageGradeRequest toLanguageGradeRequest(LanguageGrades languageGrades){
-        return new LanguageGradeRequest(languageGrades.getGrade());
+        return LanguageGradeRequest.builder()
+                .grade(languageGrades.getGrade())
+                .refLanguage(languageGrades.getRefLanguage())
+                .translatedLanguage(languageGrades.getTranslatedLanguage())
+                .build();
     }
 }

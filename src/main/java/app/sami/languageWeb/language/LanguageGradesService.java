@@ -39,17 +39,18 @@ public class LanguageGradesService {
 
     public LanguageGrades submitUserLanguageGrade(LanguageGradeRequest languageGradeRequest,
                                                   String subject,
-                                                  Language language,
                                                   UUID userId){
-        LanguageGrades alreadyExistingAssessment = languageGradesRepository.findByUserIdAndRefLanguageAndEmitterUserId(
-                userId, language,
+        LanguageGrades alreadyExistingAssessment = languageGradesRepository.findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(
+                userId, languageGradeRequest.getRefLanguage(),
+                languageGradeRequest.getTranslatedLanguage(),
                 userId).orElseThrow(LanguageNotRegisteredException::new);
 
         User emitter = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
 
         LanguageGrades languageGrades = LanguageGrades.builder()
                 .userId(userId)
-                .refLanguage(language)
+                .refLanguage(languageGradeRequest.getRefLanguage())
+                .translatedLanguage(languageGradeRequest.getTranslatedLanguage())
                 .emitterUserId(emitter.getId())
                 .grade(languageGradeRequest.getGrade())
                 .build();

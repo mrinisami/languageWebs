@@ -25,13 +25,13 @@ public class LanguageGradesController {
         return languagesGradesDto;
     }
 
-    @PostMapping("/users/{userId}/languages/{language}/grades")
+    @PostMapping("/users/{userId}/languages/grade")
     public LanguageGradesDto createUserLanguageGrade(@RequestJwtSubject String subject,
                                                      @RequestBody LanguageGradeRequest languageGradeRequest,
-                                                     @PathVariable UUID userId,
-                                                     @PathVariable String language){
+                                                     @PathVariable UUID userId
+                                                     ){
             LanguageGradesDto languageGradesDto = toLanguageGradesDto
-                    (languageGradesService.submitUserLanguageGrade(languageGradeRequest, subject, Language.valueOf(language), userId));
+                    (languageGradesService.submitUserLanguageGrade(languageGradeRequest, subject, userId));
             return languageGradesDto;
     }
 

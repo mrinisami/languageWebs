@@ -52,15 +52,18 @@ public class LanguageGradeServicesTests extends IntegrationTests {
         languageGradesTest1 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
                 .withEmitterUserId(userTest2.getId())
                 .withUserId(userTest1.getId())
-                .withRefLanguage(Language.ARABIC));
+                .withRefLanguage(Language.ARABIC)
+                .withTranslatedLanguage(Language.ENGLISH));
         languageGradesTest2 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
                 .withEmitterUserId(userTest3.getId())
                 .withUserId(userTest1.getId())
-                .withRefLanguage(Language.ARABIC));
+                .withRefLanguage(Language.ARABIC)
+                .withTranslatedLanguage(Language.ENGLISH));
         languageGradesTest3 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
                 .withEmitterUserId(userTest3.getId())
                 .withUserId(userTest1.getId())
-                .withRefLanguage(Language.ENGLISH));
+                .withRefLanguage(Language.ENGLISH)
+                .withTranslatedLanguage(Language.FULA));
     }
 
     @Test
