@@ -19,6 +19,8 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
     Optional<LanguageGrades> findByUserIdAndRefLanguageAndEmitterUserId(UUID userId, Language language, UUID emitterUserId);
     List<LanguageGrades> findUniqueRefLanguageByUserId(UUID userId);
 
+    List<LanguageGrades> findByUserIdAndEmitterUserId(UUID userId, UUID emitterUserId);
+
     @Query(value = "" +
             "WITH evaltable AS " +
             "(SELECT  AVG(lg.grade) AS eval_grade, lg.ref_language " +
@@ -40,12 +42,12 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
             "WHERE user_id = emitter_user_id " +
             "AND user_id = :userId) " +
             "SELECT et.eval_grade AS evalGrade, ue.user_grade AS userGrade, sa.self_grade AS selfGrade, " +
-            "sa.ref_language AS language " +
-            "FROM evaltable AS et " +
-            "FULL OUTER JOIN usereval AS ue " +
-            "ON et.ref_language = ue.ref_language " +
-            "full OUTER JOIN self_assessment AS sa " +
-            "ON et.ref_language = sa.ref_language",
+            "COALESCE(sa.ref_language, ue.ref_language, et.ref_language) AS language " +
+            "FROM self_assessment as sa " +
+            "left JOIN usereval AS ue " +
+            "ON sa.ref_language = ue.ref_language " +
+            "left JOIN evaltable AS et " +
+            "ON sa.ref_language = et.ref_language",
             nativeQuery = true)
     List<GradeStatsSummary> findAllGradeStats(@Param("userId") UUID userId);
 

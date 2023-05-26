@@ -16,7 +16,7 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    @GetMapping("/users")
+    @GetMapping("/public/users")
     public UsersDto getUsers(@RequestParam(defaultValue = "0") int page,
                              @RequestParam(defaultValue = "2") int pageSize
     ) {

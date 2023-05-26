@@ -1,0 +1,13 @@
+{
+	"Servers": {
+		"1": {
+			"Name": "LanguageWeb",
+			"Group": "Servers",
+			"Host": "languageWebs_pg",
+			"Port": 5432,
+			"MaintenanceDB": "languageWebs",
+			"Username": "dev",
+			"SSLMode": "prefer"
+		}
+	}
+}

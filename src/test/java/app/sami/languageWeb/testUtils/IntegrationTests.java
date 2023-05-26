@@ -34,6 +34,10 @@ public abstract class IntegrationTests {
         return MockMvcRequestBuilders.get(url).contentType(MediaType.APPLICATION_JSON);
     }
 
+    protected MockHttpServletRequestBuilder get(String url, String token) {
+        return MockMvcRequestBuilders.get(url).contentType(MediaType.APPLICATION_JSON)
+                .header("authorization", "Bearer " + token);
+    }
     protected MockHttpServletRequestBuilder post(String url){
         return MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON);
     }

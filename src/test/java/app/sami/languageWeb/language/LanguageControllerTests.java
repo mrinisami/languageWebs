@@ -5,6 +5,7 @@ import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.testUtils.IntegrationTests;
+import app.sami.languageWeb.testUtils.Randomize;
 import app.sami.languageWeb.testUtils.factories.LanguageGradesFactory;
 import app.sami.languageWeb.testUtils.factories.UserFactory;
 import app.sami.languageWeb.user.models.User;
@@ -56,6 +57,10 @@ public class LanguageControllerTests extends IntegrationTests {
                 .withEmitterUserId(userTest2.getId())
                 .withUserId(userTest2.getId())
                 .withRefLanguage(Language.MACEDONIAN));
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withEmitterUserId(userTest1.getId())
+                .withUserId(userTest2.getId())
+                .withRefLanguage(Language.ENGLISH));
     }
 
     @Test
@@ -126,4 +131,13 @@ public class LanguageControllerTests extends IntegrationTests {
         mockMvc.perform(put(url, new LanguageGradeRequest(57.0), token))
                 .andExpect(status().isOk());
     }
+    @Test
+    void validResquestGetLanguageByUserIdEmitterId() throws Exception {
+        String token = authUser(userTest1);
+        String url = String.format("/users/%s/languageGrades/%s", userTest2.getId(), userTest1.getId());
+
+        mockMvc.perform(get(url, token))
+                .andExpect(status().isOk());
+    }
+    
 }
