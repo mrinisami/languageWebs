@@ -22,5 +22,7 @@ public class LanguageGrades {
 
     @Enumerated(EnumType.STRING)
     private Language refLanguage;
+    @Enumerated(EnumType.STRING)
+    private Language translatedLanguage;
     private Double grade;
 }

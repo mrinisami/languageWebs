@@ -1,4 +1,5 @@
 package app.sami.languageWeb.language;
+import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.testUtils.factories.LanguageGradesFactory;
@@ -46,11 +47,13 @@ public class LanguageGradesRepositoryTests {
         languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
                 .withEmitterUserId(userTest2.getId())
                 .withUserId(userTest1.getId())
-                .withRefLanguage(Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withRefLanguage(Language.ARABIC)
+                .withTranslatedLanguage(Language.ENGLISH));
+        languageGradesTest3 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
                 .withEmitterUserId(userTest3.getId())
                 .withUserId(userTest1.getId())
-                .withRefLanguage(Language.ARABIC));
+                .withRefLanguage(Language.ARABIC)
+                .withTranslatedLanguage(Language.ENGLISH));
     }
 
     @Test
@@ -73,9 +76,21 @@ public class LanguageGradesRepositoryTests {
 
     @Test
     void givenEmptyRepo_ReturnsEmpty(){
-        Optional<LanguageGrades> result = languageGradesRepository.findByUserIdAndRefLanguageAndEmitterUserId(userTest2.getId(),
-                Language.KALAALLISUT, userTest2.getId());
+        Optional<LanguageGrades> result = languageGradesRepository.findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(userTest2.getId(),
+                Language.KALAALLISUT, Language.GALICIAN, userTest2.getId());
 
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void matchingLanguageGradesFindByUserIdEmitterIdLanguages_ReturnsTrue(){
+        LanguageGrades result = languageGradesRepository.findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(
+                languageGradesTest3.getUserId(),
+                languageGradesTest3.getRefLanguage(),
+                languageGradesTest3.getTranslatedLanguage(),
+                languageGradesTest3.getEmitterUserId()).orElseThrow(NotFoundException::new);
+        LanguageGrades expected = languageGradesTest3;
+
+        assertThat(result).isEqualTo(expected);
     }
 }

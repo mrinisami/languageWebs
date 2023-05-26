@@ -16,7 +16,10 @@ public interface LanguageGradesRepository extends JpaRepository<LanguageGrades, 
 
     Optional<LanguageGrades> findByUserId(UUID userId);
 
-    Optional<LanguageGrades> findByUserIdAndRefLanguageAndEmitterUserId(UUID userId, Language language, UUID emitterUserId);
+    Optional<LanguageGrades> findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(UUID userId,
+                                                                                             Language language,
+                                                                                             Language translatedLanguage,
+                                                                                             UUID emitterUserId);
     List<LanguageGrades> findUniqueRefLanguageByUserId(UUID userId);
 
     List<LanguageGrades> findByUserIdAndEmitterUserId(UUID userId, UUID emitterUserId);
