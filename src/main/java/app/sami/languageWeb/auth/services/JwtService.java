@@ -30,6 +30,9 @@ public class JwtService {
     public String generateToken(User user, Map<String, Object> extraClaims){
         JWTClaimsSet claims = new JWTClaimsSet.Builder().jwtID(UUID.randomUUID().toString())
                 .subject(user.getUsername())
+                .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
+                .claim("userId", user.getId())
                 .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)))
                 .issueTime(Date.from(Instant.now()))
                 .claim("roles", user.getUserRole().impliedRoles(user.getUserRole()))

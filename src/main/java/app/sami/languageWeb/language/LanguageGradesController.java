@@ -52,12 +52,29 @@ public class LanguageGradesController {
         return toLanguageGradesDto(languageGradesService.editUserLanguageGrade(languageGradeRequest, subject, languageGradeId));
     }
 
+    @GetMapping("/users/{userId}/languageGrades/{emitterUserId}")
+    public LanguagesGradesEmitterDto getLanguageGradesFromEmitterAndUser(@RequestJwtSubject String subject,
+                                                                         @PathVariable UUID userId,
+                                                                         @PathVariable UUID emitterUserId){
+        List<LanguageGradesEmitterDto> languageGradesEmitterDtos = languageGradesService.getByUserIdAndEmitterId(userId, subject)
+                .stream().map(this::toLanguageGradeIdDto).collect(Collectors.toList());
+
+        return new LanguagesGradesEmitterDto(languageGradesEmitterDtos);
+    }
     private LanguageGradesDto toLanguageGradesDto(LanguageGrades languageGrades){
         LanguageGradesDto languageGradesDto = LanguageGradesDto.builder()
                 .grade(languageGrades.getGrade())
                 .language(languageGrades.getRefLanguage())
                 .build();
        return languageGradesDto;
+    }
+
+    private LanguageGradesEmitterDto toLanguageGradeIdDto(LanguageGrades languageGrades){
+        return LanguageGradesEmitterDto.builder()
+                .id(languageGrades.getId())
+                .grade(languageGrades.getGrade())
+                .language(languageGrades.getRefLanguage())
+                .build();
     }
 
     private LanguageAllGradesDto toLanguageAllGradesDto(GradeStatsSummary gradeStats){

@@ -1,9 +1,16 @@
 *
+!config/
+!config/**
+
 !gradle/
 !gradle/**
+
 !src/
 !src/**
+
+!ui/
 !ui/**
+
 !.gitignore
 !build.gradle
 !docker-compose.yml

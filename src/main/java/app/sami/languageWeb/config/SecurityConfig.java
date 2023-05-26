@@ -36,8 +36,10 @@ public class SecurityConfig {
     private String keySetUri;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.
-                csrf()
+        http
+                .cors()
+                .and()
+                .csrf()
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/auth/**", "/.well-known/**", "/public/**")
@@ -55,6 +57,8 @@ public class SecurityConfig {
                 .jwt()
                 .decoder(jwtDecoder())
                 .jwtAuthenticationConverter(jwtAuthenticationConverter());
+
+
 
         return http.build();
     }

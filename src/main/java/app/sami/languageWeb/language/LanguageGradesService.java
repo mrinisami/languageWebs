@@ -6,6 +6,7 @@ import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.language.dtos.LanguageGradeRequest;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
+import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.AllArgsConstructor;
@@ -75,6 +76,13 @@ public class LanguageGradesService {
         LanguageGrades languageGrades = languageGradesRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
         languageGradesRepository.delete(languageGrades);
+    }
+
+    public List<LanguageGrades> getByUserIdAndEmitterId(UUID userId, String subject){
+        User user = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
+        List<LanguageGrades> languageGrades = languageGradesRepository.findByUserIdAndEmitterUserId(userId, user.getId());
+
+        return languageGrades;
     }
 
 }

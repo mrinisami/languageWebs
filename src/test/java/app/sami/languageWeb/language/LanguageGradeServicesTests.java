@@ -14,6 +14,10 @@ import app.sami.languageWeb.user.repos.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -34,6 +38,7 @@ public class LanguageGradeServicesTests extends IntegrationTests {
     private User userEvaluator2;
     private LanguageGrades languageGradesTest1;
     private LanguageGrades languageGradesTest2;
+    private LanguageGrades languageGradesTest3;
     private Double grade1 = 50.0;
     private Double grade2 = 100.0;
 
@@ -48,10 +53,14 @@ public class LanguageGradeServicesTests extends IntegrationTests {
                 .withEmitterUserId(userTest2.getId())
                 .withUserId(userTest1.getId())
                 .withRefLanguage(Language.ARABIC));
-        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+        languageGradesTest2 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
                 .withEmitterUserId(userTest3.getId())
                 .withUserId(userTest1.getId())
                 .withRefLanguage(Language.ARABIC));
+        languageGradesTest3 = languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade2)
+                .withEmitterUserId(userTest3.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ENGLISH));
     }
 
     @Test
@@ -75,4 +84,22 @@ public class LanguageGradeServicesTests extends IntegrationTests {
         assertThat(result).isEqualTo(expected);
     }
 
+    @Test
+    void matchingLanguageGradesByEmitterAndUser_ReturnsTrue(){
+        List<LanguageGrades> expected = new ArrayList<>();
+        expected.add(languageGradesTest2);
+        expected.add(languageGradesTest3);
+
+        List<LanguageGrades> result = languageGradesRepository.findByUserIdAndEmitterUserId(userTest1.getId(),
+                userTest3.getId());
+
+        assertThatList(result).hasSameElementsAs(expected);
+    }
+
+    @Test
+    void givenEmptyRepoLanguageGradesByEmitterAndUser_ReturnsEmpty(){
+        List<LanguageGrades> result = languageGradesRepository.findByUserIdAndEmitterUserId(userTest1.getId(), userEvaluator.getId());
+
+        assertThatList(result).isEmpty();
+    }
 }
