@@ -20,7 +20,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 @Transactional(dontRollbackOn = RuntimeException.class)
-@ActiveProfiles({"test"})
+@ActiveProfiles("test")
 @Import(TestConfig.class)
 public abstract class IntegrationTests {
 

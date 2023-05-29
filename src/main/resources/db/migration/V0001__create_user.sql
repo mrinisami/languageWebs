@@ -35,5 +35,5 @@ CREATE TABLE language_grades(
     user_id uuid NOT NULL REFERENCES users(id),
     emitter_user_id uuid NOT NULL REFERENCES users(id),
     grade float(53),
-    UNIQUE(user_id, emitter_user_id, ref_language)
+    UNIQUE(user_id, emitter_user_id, ref_language, translated_language)
 )

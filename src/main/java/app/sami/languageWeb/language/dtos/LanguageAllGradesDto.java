@@ -13,4 +13,5 @@ public class LanguageAllGradesDto {
     private Double evaluatorGrade;
     private Double selfAssessment;
     private Language language;
+    private Language translatedLanguage;
 }

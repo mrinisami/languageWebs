@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class LanguageGradesDto {
-    private Role role;
     private Language language;
+    private Language translatedLanguage;
     private double grade;
 }

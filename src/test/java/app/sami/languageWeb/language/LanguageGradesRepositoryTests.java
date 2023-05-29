@@ -45,6 +45,11 @@ public class LanguageGradesRepositoryTests {
         userEvaluator = userRepository.save(UserFactory.evaluatorGenerator());
         userEvaluator2 = userRepository.save(UserFactory.evaluatorGenerator());
         languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
+                .withEmitterUserId(userTest1.getId())
+                .withUserId(userTest1.getId())
+                .withRefLanguage(Language.ARABIC)
+                .withTranslatedLanguage(Language.ENGLISH));
+        languageGradesRepository.save(LanguageGradesFactory.generateFromUsers().withGrade(grade1)
                 .withEmitterUserId(userTest2.getId())
                 .withUserId(userTest1.getId())
                 .withRefLanguage(Language.ARABIC)
@@ -71,7 +76,7 @@ public class LanguageGradesRepositoryTests {
 
         List<GradeStatsSummary> gradeStats = languageGradesRepository.findAllGradeStats(UUID.randomUUID());
 
-        assertThat(gradeStats.size() == 1);
+        assertThat(gradeStats.isEmpty());
     }
 
     @Test
