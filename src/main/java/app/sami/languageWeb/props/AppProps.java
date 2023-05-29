@@ -12,10 +12,13 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties(prefix = "app")
 @Validated
 public class AppProps {
+
     @NotNull
     public final JksProps jks;
     @URL
     public final String baseURL;
     @URL
     public final String issuer;
+    @NotNull
+    public final MinioProps minio;
 }
