@@ -185,6 +185,7 @@ public enum Language {
     YORUBA("yo"),
     ZHUANG("za"),
     CHINESE("zh"),
+    CANTONESE("ct"),
     ZULU("zu");
 
 

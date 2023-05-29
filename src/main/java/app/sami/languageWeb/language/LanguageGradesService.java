@@ -40,13 +40,17 @@ public class LanguageGradesService {
     public LanguageGrades submitUserLanguageGrade(LanguageGradeRequest languageGradeRequest,
                                                   String subject,
                                                   UUID userId){
-        LanguageGrades alreadyExistingAssessment = languageGradesRepository.findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(
-                userId, languageGradeRequest.getRefLanguage(),
-                languageGradeRequest.getTranslatedLanguage(),
-                userId).orElseThrow(LanguageNotRegisteredException::new);
+
+
 
         User emitter = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
 
+        if (!emitter.getId().equals(userId)){
+            LanguageGrades alreadyExistingAssessment = languageGradesRepository.findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(
+                    userId, languageGradeRequest.getRefLanguage(),
+                    languageGradeRequest.getTranslatedLanguage(),
+                    userId).orElseThrow(LanguageNotRegisteredException::new);
+        }
         LanguageGrades languageGrades = LanguageGrades.builder()
                 .userId(userId)
                 .refLanguage(languageGradeRequest.getRefLanguage())
@@ -65,8 +69,7 @@ public class LanguageGradesService {
                 .orElseThrow(NotFoundException::new);
 
         User user = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
-
-        if (user.getId() != languageGrades.getEmitterUserId()) throw new UserNotAllowedException();
+        if (!(user.getId().equals(languageGrades.getEmitterUserId()))) throw new UserNotAllowedException();
         languageGrades.setGrade(languageGradeRequest.getGrade());
         languageGradesRepository.save(languageGrades);
 

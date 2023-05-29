@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class LanguageGradesEmitterDto {
     private Long id;
     private Language language;
+    private Language translatedLanguage;
     private Double grade;
 }

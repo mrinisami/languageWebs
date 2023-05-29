@@ -6,6 +6,7 @@ import { Grid } from "@mui/material";
 import NavBar from "../Navigation/NavBar";
 import Profile from "../Profile/Profile";
 import Login from "../Auth/Login";
+import LanguageReviews from "../Profile/LanguageReviews";
 
 export const App = () => {
   return (
@@ -14,7 +15,7 @@ export const App = () => {
       <Routes>
         <Route path={routes.home} element={<Home />} />
         <Route path={routes.login} element={<Login />} />
-        <Route path="/users/:userId/profile" element={<Profile />} />
+        <Route path="/users/:userId/profile/:tabValue" element={<Profile />} />
       </Routes>
     </Grid>
   );

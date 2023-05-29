@@ -5,7 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import { routes } from "../routes";
-import { getFormattedName, getUserId } from "../utils/user";
+import { getFormattedNameFromToken, getUserId } from "../utils/user";
 
 export interface TokenPayload {
   sub: string;
@@ -21,7 +21,7 @@ export default () => {
   const navigate = useNavigate();
   const onClickProfile = () => {
     setIsDropDown(false);
-    navigate(routes.profile(getUserId(localStorage.getItem("token"))));
+    navigate(routes.profile(getUserId(localStorage.getItem("token")), "recentActivity"));
   };
   const onClickLogoff = () => {
     localStorage.removeItem("token");
@@ -44,7 +44,7 @@ export default () => {
         avatar={<Avatar />}
         onClick={() => setIsDropDown(!isDropDown)}
         sx={{ cursor: "pointer" }}
-        label={isLoggedIn ? getFormattedName(localStorage.getItem("token")) : "Guest"}
+        label={isLoggedIn ? getFormattedNameFromToken(localStorage.getItem("token")) : "Guest"}
       />
       {isDropDown ? (
         <Paper>

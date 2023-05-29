@@ -65,6 +65,7 @@ public class LanguageGradesController {
         LanguageGradesDto languageGradesDto = LanguageGradesDto.builder()
                 .grade(languageGrades.getGrade())
                 .language(languageGrades.getRefLanguage())
+                .translatedLanguage(languageGrades.getTranslatedLanguage())
                 .build();
        return languageGradesDto;
     }
@@ -74,6 +75,7 @@ public class LanguageGradesController {
                 .id(languageGrades.getId())
                 .grade(languageGrades.getGrade())
                 .language(languageGrades.getRefLanguage())
+                .translatedLanguage(languageGrades.getTranslatedLanguage())
                 .build();
     }
 
@@ -83,6 +85,7 @@ public class LanguageGradesController {
                 .userGrade(gradeStats.getUserGrade())
                 .selfAssessment(gradeStats.getSelfGrade())
                 .language(gradeStats.getLanguage())
+                .translatedLanguage(gradeStats.getTranslatedLanguage())
                 .build();
     }
 

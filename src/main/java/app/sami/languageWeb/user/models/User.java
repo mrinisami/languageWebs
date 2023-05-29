@@ -2,10 +2,7 @@ package app.sami.languageWeb.user.models;
 
 import app.sami.languageWeb.auth.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,6 +21,7 @@ import java.util.UUID;
 @Data
 @Builder
 @AllArgsConstructor
+@With
 public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

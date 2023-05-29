@@ -3,3 +3,8 @@ server:
 
 app:
   baseURL: http://localhost:${server.port}
+
+spring:
+  flyway:
+    locations:
+      - "classpath:db/migration"

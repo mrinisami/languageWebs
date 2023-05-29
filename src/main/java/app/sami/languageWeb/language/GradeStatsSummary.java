@@ -8,4 +8,5 @@ public interface GradeStatsSummary {
     Double getUserGrade();
     Double getSelfGrade();
     Language getLanguage();
+    Language getTranslatedLanguage();
 }

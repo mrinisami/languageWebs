@@ -1,6 +1,7 @@
 import { Avatar, Grid } from "@mui/material";
 import React, { useEffect } from "react";
 import UserInfo from "./UserInfo";
+import SearchUsers from "./SearchUsers";
 
 export default () => {
   return (
@@ -14,7 +15,7 @@ export default () => {
         </Grid>
       </Grid>
       <Grid item xs={3}>
-        <></>
+        <SearchUsers />
       </Grid>
       <Grid item>
         <UserInfo />
