@@ -1,36 +1,58 @@
-import React from "react";
-import { UserSearch } from "../utils/user";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { Autocomplete, Grid, TextField } from "@mui/material";
-import axios from "axios";
-import { endpoints } from "../api/endpoints";
+import { Autocomplete, Box, Grid, TextField, Typography } from "@mui/material";
+import useAxios from "axios-hooks";
+import { UserSearch, routes } from "../api/user";
+import { routes as uiRoutes } from "../routes";
+import { useNavigate } from "react-router-dom";
 
-interface Props {
-  data: [] | UserSearch[];
-  loading: boolean;
-}
-export default async (props: Props) => {
-  const [options, setOptions] = useState([]);
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {};
-  const getusers = async () => {
-    setOptions(await axios.get(endpoints.getUsers, { params: { pageSize: 10 } }));
-  };
+export default () => {
+  const [users, setUsers] = useState<readonly UserSearch[]>([]);
+  const navigate = useNavigate();
+  const [inputValue, setInputValue] = useState<string>("");
+  const [userSelected, setUserSelected] = useState<UserSearch | null>(null);
+  const [{ data, loading, error }, executeGet] = useAxios(
+    {
+      url: routes.searchUsers,
+      method: "GET"
+    },
+    { manual: true }
+  );
+
+  useEffect(() => {
+    if (inputValue !== "") {
+      executeGet({ params: { nameLike: inputValue } });
+      if (data) {
+        setUsers(data.users);
+      }
+    }
+  }, [inputValue]);
+
+  useEffect(() => {
+    if (userSelected !== null) {
+      navigate(uiRoutes.profile(userSelected?.id, "recentActivity"));
+      setUserSelected(null);
+      setUsers([]);
+    }
+  }, [userSelected]);
   return (
     <Grid item>
       <Autocomplete
         filterOptions={(x) => x}
-        onInputChange={getusers}
-        options={options}
+        options={users}
+        getOptionLabel={(user) => (typeof user === "string" ? user : `${user.firstName} ${user.lastName}`)}
+        value={userSelected}
+        noOptionsText="No users found"
+        onInputChange={(event: React.SyntheticEvent, newValue: string) => setInputValue(newValue)}
+        onChange={(event: React.SyntheticEvent, newValue: UserSearch | null) => {
+          setUserSelected(newValue);
+        }}
         renderInput={(params) => <TextField {...params} />}
-        renderOption={() => {
-          const firstName = "";
-          const lastName = "";
-
+        renderOption={(props, user) => {
           return (
-            <Grid container>
-              <Grid item>{firstName}</Grid>
-              <Grid item>{lastName}</Grid>
-            </Grid>
+            <li {...props}>
+              <Typography>{`${user.firstName} ${user.lastName}`}</Typography>
+            </li>
           );
         }}
       />

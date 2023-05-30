@@ -16,10 +16,13 @@ import {
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import EmailIcon from "@mui/icons-material/Email";
-import { endpoints } from "../api/endpoints";
+import { endpoints, user } from "../api/routes";
 import { routes } from "../routes";
 import { Navigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
+import { configureAxiosHeaders } from "../utils/axios";
+import { localStorage } from "../utils/localstorage";
+import { useTokenContext } from "../context/TokenContext";
 
 export default () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -28,7 +31,7 @@ export default () => {
   const [{ data, loading, error }, onClickLogin] = useAxios(
     {
       baseURL: process.env.REACT_APP_API_BASE_URL,
-      url: endpoints.login,
+      url: user.login,
       method: "POST",
       data: { email, userPassword: password }
     },
@@ -39,7 +42,8 @@ export default () => {
     console.log(error.message);
   }
   if (data) {
-    localStorage.setItem("token", data.token);
+    localStorage.token.set(data.token);
+    configureAxiosHeaders(data.token);
     return <Navigate to={routes.home} />;
   }
 

@@ -5,7 +5,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LoginIcon from "@mui/icons-material/Login";
 import { routes } from "../routes";
-import { getFormattedName, getUserId } from "../utils/user";
+import { getFormattedNameFromToken, getUserId } from "../utils/user";
+import { configureAxiosHeaders } from "../utils/axios";
+import { useTokenContext } from "../context/TokenContext";
 
 export interface TokenPayload {
   sub: string;
@@ -17,17 +19,19 @@ export interface TokenPayload {
 export default () => {
   const [isDropDown, setIsDropDown] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [tokenPayload, setTokenPayload] = useState<TokenPayload | null>(null);
   const navigate = useNavigate();
+  const { login: logoff } = useTokenContext();
   const onClickProfile = () => {
     setIsDropDown(false);
-    navigate(routes.profile(getUserId(localStorage.getItem("token"))));
+    navigate(routes.profile(getUserId(localStorage.getItem("token")), "recentActivity"));
   };
   const onClickLogoff = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
     navigate(routes.home);
     setIsDropDown(false);
+    configureAxiosHeaders();
+    logoff();
   };
   const onClickLogin = () => {
     navigate(routes.login);
@@ -44,7 +48,7 @@ export default () => {
         avatar={<Avatar />}
         onClick={() => setIsDropDown(!isDropDown)}
         sx={{ cursor: "pointer" }}
-        label={isLoggedIn ? getFormattedName(localStorage.getItem("token")) : "Guest"}
+        label={isLoggedIn ? getFormattedNameFromToken(localStorage.getItem("token")) : "Guest"}
       />
       {isDropDown ? (
         <Paper>

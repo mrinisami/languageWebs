@@ -1,8 +1,11 @@
+import { getUserId } from "./user";
+
 const ls = window.localStorage;
 
 interface LocalStorageItem<T> {
   set: (value: T) => void;
-  get: (defaultValue: T) => T;
+  get: () => T;
+  exists: () => boolean;
   remove: () => void;
 }
 
@@ -17,7 +20,12 @@ export const localStorage: LocalStorage = {
 function generateLocalStorageItem<T>(key: string): LocalStorageItem<T> {
   return {
     set: (value: T) => ls.setItem(key, String(value)),
-    get: (defaultValue: T) => (ls.getItem(key) || defaultValue) as T,
+    get: () => ls.getItem(key) as T,
+    exists: () => Boolean(ls.getItem(key)),
     remove: () => ls.removeItem(key)
   };
 }
+
+export const isSubject = (userId: string | undefined) => {
+  return userId === getUserId(localStorage.token.get());
+};
