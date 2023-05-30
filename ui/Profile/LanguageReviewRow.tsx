@@ -7,13 +7,13 @@ import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import LanguageGradeDialog from "./LanguageGradeDialog";
 import useAxios from "axios-hooks";
 import { languageGrades } from "../api/routes";
-import { Navigate, useParams } from "react-router-dom";
-import CustomBox from "../customComponents/Box";
+import { useParams } from "react-router-dom";
 import { circleProgressColor } from "../utils/colors";
+import { useTokenContext } from "../context/TokenContext";
 
 interface Props {
   languageGrade: LanguageAllGrades;
-  userLanguageGrade: LanguageGradeEmitter | undefined;
+  userLanguageGrade: LanguageGradeEmitter | null;
 }
 
 export default (props: Props) => {
@@ -52,7 +52,7 @@ export default (props: Props) => {
   if (editLoading) {
     <p>Loading...</p>;
   }
-
+  const { isLoggedIn } = useTokenContext();
   const editDataCall = (data: LanguageRequest) => {
     executeEdit({
       data: data
@@ -78,7 +78,6 @@ export default (props: Props) => {
             variant="determinate"
             value={props.languageGrade.selfAssessment}
             thickness={7}
-            {...props}
             sx={{ color: circleProgressColor(props.languageGrade.selfAssessment) }}
           />
           <Box sx={boxSx}>
@@ -99,7 +98,6 @@ export default (props: Props) => {
             variant="determinate"
             value={props.languageGrade.evaluatorGrade ? props.languageGrade.evaluatorGrade : 100}
             thickness={7}
-            {...props}
             sx={{
               color: circleProgressColor(props.languageGrade.evaluatorGrade ? props.languageGrade.evaluatorGrade : 0)
             }}
@@ -122,7 +120,6 @@ export default (props: Props) => {
             variant="determinate"
             value={props.languageGrade.userGrade ? props.languageGrade.userGrade : 100}
             thickness={7}
-            {...props}
             sx={{
               color: circleProgressColor(props.languageGrade.userGrade ? props.languageGrade.userGrade : 0)
             }}
@@ -139,35 +136,49 @@ export default (props: Props) => {
           </Box>
         </Box>
       </TableCell>
-      <TableCell>
-        {props.userLanguageGrade === null ? (
-          <IconButton onClick={() => setOpenCreateDialog(true)} color="primary">
-            <AddCircleOutlineIcon />
-          </IconButton>
-        ) : (
-          <IconButton onClick={() => setOpenEditDialog(true)} color="primary">
-            <ModeIcon />
-          </IconButton>
-        )}
-        <LanguageGradeDialog
-          onClose={() => setOpenCreateDialog(false)}
-          open={openCreateDialog}
-          title={"Add an assessment"}
-          grade={props.languageGrade.userGrade ? props.languageGrade.userGrade : 0}
-          language={props.languageGrade.language}
-          translatedLanguage={props.languageGrade.translatedLanguage}
-          apiCall={postData}
-        />
-        <LanguageGradeDialog
-          open={openEditDialog}
-          onClose={() => setOpenEditDialog(false)}
-          title={"Edit an assessment"}
-          grade={0}
-          language={props.languageGrade.language}
-          translatedLanguage={props.languageGrade.translatedLanguage}
-          apiCall={editDataCall}
-        />
+      <TableCell
+        onClick={props.userLanguageGrade !== null ? () => setOpenEditDialog(true) : () => setOpenCreateDialog(true)}
+        sx={{ cursor: "pointer" }}
+      >
+        <Box sx={{ position: "relative", display: "inline-flex" }}>
+          <CircularProgress
+            variant="determinate"
+            value={props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 100}
+            thickness={7}
+            sx={{
+              color: circleProgressColor(props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 0)
+            }}
+          />
+          <Box sx={boxSx}>
+            <Typography
+              variant="subtitle2"
+              component="div"
+              fontWeight="bold"
+              color={circleProgressColor(props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 0)}
+            >
+              {props.userLanguageGrade !== null ? props.userLanguageGrade.grade : ""}
+            </Typography>
+          </Box>
+        </Box>
       </TableCell>
+      <LanguageGradeDialog
+        onClose={() => setOpenCreateDialog(false)}
+        open={openCreateDialog}
+        title={"Add an assessment"}
+        grade={props.languageGrade.userGrade ? props.languageGrade.userGrade : 0}
+        language={props.languageGrade.language}
+        translatedLanguage={props.languageGrade.translatedLanguage}
+        apiCall={postData}
+      />
+      <LanguageGradeDialog
+        open={openEditDialog}
+        onClose={() => setOpenEditDialog(false)}
+        title={"Edit an assessment"}
+        grade={props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 0}
+        language={props.languageGrade.language}
+        translatedLanguage={props.languageGrade.translatedLanguage}
+        apiCall={editDataCall}
+      />
     </TableRow>
   );
 };

@@ -1,17 +1,12 @@
-import React from "react";
+import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import Axios from "axios";
-import { configure } from "axios-hooks";
+import { configureAxiosHeaders } from "./utils/axios";
 import { localStorage } from "./utils/localstorage";
+import { ProvideToken } from "./context/TokenContext";
 
-const axios = Axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL,
-  headers: { Authorization: `Bearer ${localStorage.token.get("")}` }
-});
-
-configure({ axios });
+configureAxiosHeaders(localStorage.token.get());
 
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(

@@ -8,6 +8,7 @@ import useAxios from "axios-hooks";
 import { user } from "../api/routes";
 import { routes } from "../routes";
 import { localStorage } from "../utils/localstorage";
+import LanguageReviewPublic from "./LanguageReviewPublic";
 
 export default () => {
   const userId: string | undefined = useParams() !== undefined ? useParams().userId : "";
@@ -31,7 +32,7 @@ export default () => {
   }
   if (data) {
     return (
-      <Container sx={{ mx: 30, mt: 10 }}>
+      <Container maxWidth="md">
         <Paper variant="outlined" sx={{ p: 2 }}>
           <Grid container alignItems="center">
             <Grid item container alignSelf="flex-start">
@@ -64,7 +65,7 @@ export default () => {
       return <></>;
     }
     if (tabValue === "languageReviews") {
-      return <LanguageReviews />;
+      return localStorage.token.exists() ? <LanguageReviews /> : <LanguageReviewPublic />;
     }
   }
 };

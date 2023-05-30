@@ -11,13 +11,15 @@ export default () => {
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState<string>("");
   const [userSelected, setUserSelected] = useState<UserSearch | null>(null);
-  const [{ data, loading, error }, executeGet] = useAxios({
-    url: routes.searchUsers,
-    method: "GET"
-  });
+  const [{ data, loading, error }, executeGet] = useAxios(
+    {
+      url: routes.searchUsers,
+      method: "GET"
+    },
+    { manual: true }
+  );
 
   useEffect(() => {
-    console.log(users);
     if (inputValue !== "") {
       executeGet({ params: { nameLike: inputValue } });
       if (data) {

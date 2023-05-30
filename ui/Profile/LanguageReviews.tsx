@@ -12,8 +12,7 @@ import {
   TableHead,
   TableRow
 } from "@mui/material";
-import { languageGrades, user } from "../api/routes";
-import { getUserId } from "../utils/user";
+import { languageGrades } from "../api/routes";
 import useAxios from "axios-hooks";
 import { LanguageAllGrades, LanguageGradeEmitter, LanguagesAllGrades, LanguagesGradesEmitter } from "../api/language";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
@@ -21,6 +20,8 @@ import LanguageReviewRow from "./LanguageReviewRow";
 import { useParams } from "react-router-dom";
 import { isSubject, localStorage } from "../utils/localstorage";
 import AddLanguageDialog from "./AddLanguageDialog";
+import { useTokenContext } from "../context/TokenContext";
+import { getUserId } from "../utils/user";
 
 export default () => {
   const userId: string | undefined = useParams() ? useParams().userId : "";
@@ -29,26 +30,18 @@ export default () => {
     url: languageGrades.getUserGrades(userId),
     method: "GET"
   });
-  const [{ data: userGradesData, loading: userGradesLoading, error: userGradesError }] =
-    useAxios<LanguagesGradesEmitter>({
-      url: languageGrades.getListofEmittedGrades(userId, getUserId(localStorage.token.get(""))),
-      method: "GET",
-      headers: { Authorization: `Bearer ${localStorage.token.get("")}` }
-    });
+  const [{ data: userGradeData, loading: userGradeLoading, error: userGradeError }] = useAxios<LanguagesGradesEmitter>({
+    url: languageGrades.getListofEmittedGrades(userId, getUserId(localStorage.token.get()))
+  });
   if (error) {
     return <p>{error.response?.data.message}</p>;
   }
 
-  if (userGradesError) {
-    return <p>{userGradesError.response?.data.message}</p>;
-  }
   if (loading) {
     return <p>loading...</p>;
   }
-  if (userGradesLoading) {
-    return <p>loading...</p>;
-  }
-  if (data && userGradesData) {
+
+  if (data) {
     return (
       <Card>
         <Table>
@@ -58,6 +51,7 @@ export default () => {
               <TableCell>Self</TableCell>
               <TableCell>Evaluator</TableCell>
               <TableCell>User</TableCell>
+              <TableCell>My Grade</TableCell>
               <TableCell>
                 {isSubject(userId) ? (
                   <IconButton onClick={() => setOpen(true)} color="primary">
@@ -71,7 +65,7 @@ export default () => {
           </TableHead>
           <TableBody>
             {data.languages.map((languageGrade: LanguageAllGrades, i) => {
-              const userReview: LanguageGradeEmitter | undefined = userGradesData.languages.find(
+              const userReview: LanguageGradeEmitter | null = userGradeData?.languages.find(
                 (userLanguageGrade: LanguageGradeEmitter) =>
                   userLanguageGrade.language === languageGrade.language &&
                   userLanguageGrade.translatedLanguage === languageGrade.translatedLanguage
@@ -80,7 +74,7 @@ export default () => {
                 <LanguageReviewRow
                   languageGrade={languageGrade}
                   key={i}
-                  userLanguageGrade={userReview === undefined ? undefined : userReview}
+                  userLanguageGrade={userReview === null ? null : userReview}
                 />
               );
             })}

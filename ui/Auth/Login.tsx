@@ -20,6 +20,9 @@ import { endpoints, user } from "../api/routes";
 import { routes } from "../routes";
 import { Navigate } from "react-router-dom";
 import { LoadingButton } from "@mui/lab";
+import { configureAxiosHeaders } from "../utils/axios";
+import { localStorage } from "../utils/localstorage";
+import { useTokenContext } from "../context/TokenContext";
 
 export default () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -39,7 +42,8 @@ export default () => {
     console.log(error.message);
   }
   if (data) {
-    localStorage.setItem("token", data.token);
+    localStorage.token.set(data.token);
+    configureAxiosHeaders(data.token);
     return <Navigate to={routes.home} />;
   }
 
