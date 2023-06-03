@@ -5,6 +5,7 @@ import lombok.Builder;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @AllArgsConstructor
 @Builder
@@ -15,14 +16,14 @@ public class RequestJwtClaims {
         return new RequestJwtClaims(claims);
     }
 
-    public Optional<String> getSubject(){
-        return claimToString("sub");
-    };
-
+    public Optional<UUID> getSubject() {return claimToUUID("sub");}
     public Optional<String> claimToString(String key){
         return rawClaim(key).map(Object::toString);
     }
 
+    public Optional<UUID> claimToUUID(String key){
+        return rawClaim("sub").map((claim) -> UUID.fromString(claim.toString()));
+    }
     public Optional<Object> rawClaim(String key){
         return Optional.ofNullable(claims.getOrDefault(key, null));
     }

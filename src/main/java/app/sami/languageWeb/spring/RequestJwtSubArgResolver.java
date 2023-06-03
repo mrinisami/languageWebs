@@ -11,6 +11,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.util.UUID;
+
+import static org.checkerframework.checker.nullness.Opt.orElseThrow;
+
 @Component
 @AllArgsConstructor
 public class RequestJwtSubArgResolver implements HandlerMethodArgumentResolver {
@@ -24,7 +28,7 @@ public class RequestJwtSubArgResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public String resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public UUID resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         return requestJwtClaimsExtractor.extract().flatMap(RequestJwtClaims::getSubject)
                 .orElseThrow(UserNotAllowedException::new);
     }

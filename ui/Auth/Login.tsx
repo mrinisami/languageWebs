@@ -46,7 +46,7 @@ export default () => {
     configureAxiosHeaders(data.token);
     return <Navigate to={routes.home} />;
   }
-
+  configureAxiosHeaders(localStorage.token.get());
   return (
     <Grid item container alignItems="center" justifyContent="center">
       <Paper variant="outlined" sx={{ px: 2, pb: 1 }}>
@@ -74,7 +74,7 @@ export default () => {
               variant="standard"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               fullWidth
-              type={showPassword ? "text" : "password"}
+              type={showPassword ? "storedContent" : "password"}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

@@ -118,8 +118,7 @@ public class LanguageControllerTests extends IntegrationTests {
     }
     @Test
     void givenWrongUserLanguageGrades_Returns404() throws Exception {
-        String url = "/public/users/" + UUID.randomUUID() + "/languages/grades";
-
+        String url = String.format("/public/users/%s/languages/grades", UUID.randomUUID());
         mockMvc.perform(get(url))
                 .andExpect(status().isNotFound());
     }

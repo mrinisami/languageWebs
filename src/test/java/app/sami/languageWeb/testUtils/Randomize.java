@@ -1,6 +1,7 @@
 package app.sami.languageWeb.testUtils;
 
 import app.sami.languageWeb.language.models.Language;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.nio.charset.Charset;
 import java.util.Random;
@@ -18,11 +19,7 @@ public class Randomize {
     }
 
     public static String name(){
-        byte[] array = new byte[7];
-        new Random().nextBytes(array);
-        String generatedString = new String(array, Charset.forName("UTF-8"));
-
-        return generatedString;
+        return RandomStringUtils.randomAlphabetic(10);
     }
 
     public static Double grade(){
