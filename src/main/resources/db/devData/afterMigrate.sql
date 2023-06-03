@@ -1,4 +1,5 @@
 DELETE FROM language_grades;
+DELETE FROM stored_content;
 DELETE from users;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 

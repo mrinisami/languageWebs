@@ -38,6 +38,12 @@ public abstract class IntegrationTests {
         return MockMvcRequestBuilders.get(url).contentType(MediaType.APPLICATION_JSON)
                 .header("authorization", "Bearer " + token);
     }
+
+    protected MockHttpServletRequestBuilder get(String url, String token, Object body) throws JsonProcessingException {
+        return MockMvcRequestBuilders.get(url)
+                .header("authorization", "Bearer " + token)
+                .content(objectMapper.writeValueAsBytes(body));
+    }
     protected MockHttpServletRequestBuilder post(String url){
         return MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON);
     }
@@ -58,7 +64,7 @@ public abstract class IntegrationTests {
     }
     protected String authUser(User user) throws Exception {
         Object body = AuthenticationRequest.builder()
-                .email(user.getEmail())
+                .id(user.getId())
                 .userPassword(user.getUserPassword())
                 .build();
         String response =  mockMvc.perform(post("/auth/authenticate")

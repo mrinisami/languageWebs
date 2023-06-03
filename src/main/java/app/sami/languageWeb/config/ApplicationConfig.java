@@ -13,6 +13,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.UUID;
+
 @Configuration
 public class ApplicationConfig {
     @Autowired
@@ -21,7 +23,7 @@ public class ApplicationConfig {
     private UserRepository userRepository;
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByEmail(username)
+        return username -> userRepository.findById(UUID.fromString(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 

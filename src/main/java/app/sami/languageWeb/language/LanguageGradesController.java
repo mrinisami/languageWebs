@@ -26,7 +26,7 @@ public class LanguageGradesController {
     }
 
     @PostMapping("/users/{userId}/languages/grade")
-    public LanguageGradesDto createUserLanguageGrade(@RequestJwtSubject String subject,
+    public LanguageGradesDto createUserLanguageGrade(@RequestJwtSubject UUID subject,
                                                      @RequestBody LanguageGradeRequest languageGradeRequest,
                                                      @PathVariable UUID userId
                                                      ){
@@ -44,7 +44,7 @@ public class LanguageGradesController {
     }
 
     @PutMapping("/users/{userId}/languageGrade/{languageGradeId}")
-    public LanguageGradesDto editLanguageGrade(@RequestJwtSubject String subject,
+    public LanguageGradesDto editLanguageGrade(@RequestJwtSubject UUID subject,
                                                @RequestBody LanguageGradeRequest languageGradeRequest,
                                                @PathVariable UUID userId,
                                                @PathVariable Long languageGradeId){
@@ -53,7 +53,7 @@ public class LanguageGradesController {
     }
 
     @GetMapping("/users/{userId}/languageGrades/{emitterUserId}")
-    public LanguagesGradesEmitterDto getLanguageGradesFromEmitterAndUser(@RequestJwtSubject String subject,
+    public LanguagesGradesEmitterDto getLanguageGradesFromEmitterAndUser(@RequestJwtSubject UUID subject,
                                                                          @PathVariable UUID userId,
                                                                          @PathVariable UUID emitterUserId){
         List<LanguageGradesEmitterDto> languageGradesEmitterDtos = languageGradesService.getByUserIdAndEmitterId(userId, subject)

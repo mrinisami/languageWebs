@@ -20,7 +20,6 @@ export default () => {
   const [isDropDown, setIsDropDown] = useState<boolean>(false);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const navigate = useNavigate();
-  const { login: logoff } = useTokenContext();
   const onClickProfile = () => {
     setIsDropDown(false);
     navigate(routes.profile(getUserId(localStorage.getItem("token")), "recentActivity"));
@@ -31,7 +30,6 @@ export default () => {
     navigate(routes.home);
     setIsDropDown(false);
     configureAxiosHeaders();
-    logoff();
   };
   const onClickLogin = () => {
     navigate(routes.login);

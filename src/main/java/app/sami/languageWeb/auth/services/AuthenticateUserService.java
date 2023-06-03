@@ -20,10 +20,10 @@ public class AuthenticateUserService {
 
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
+                request.getId(),
                 request.getUserPassword()
         ));
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findById(request.getId())
                 .orElseThrow(
                 );
         String jwtToken = jwtService.generateToken(user);
