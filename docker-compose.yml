@@ -34,4 +34,4 @@ services:
       MINIO_ROOT_USER: dev
       MINIO_ROOT_PASSWORD: admin123
     entrypoint: sh
-    command: -c 'mkdir -p /data/languageWeb && minio server --console-address ":9001" /data'
+    command: -c 'mkdir -p /data/language-web && minio server --console-address ":9001" /data'

@@ -8,7 +8,7 @@ app:
     filePath: classpath:keystore/keystore.jks
     password: keypass123
   minio:
-    bucketName: languageWeb
+    bucketName: language-web
     username: dev
     password: admin123
     url: http://localhost:9000

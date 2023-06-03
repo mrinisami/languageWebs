@@ -1,6 +1,7 @@
 package app.sami.languageWeb.error;
 
 import app.sami.languageWeb.error.exceptions.LanguageNotRegisteredException;
+import app.sami.languageWeb.error.exceptions.MinioPutUriException;
 import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import org.springframework.http.HttpStatus;
@@ -19,4 +20,8 @@ public class ErrorController {
     @ExceptionHandler({UserNotAllowedException.class})
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public Error.Response unauthorized(Exception ex) {return new Error.Response(ex.getMessage());}
+
+    @ExceptionHandler({MinioPutUriException.class})
+    @ResponseStatus(value= HttpStatus.BAD_REQUEST)
+    public Error.Response storageProblem(Exception ex){return new Error.Response(ex.getMessage());}
 }

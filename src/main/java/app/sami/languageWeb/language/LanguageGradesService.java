@@ -38,14 +38,11 @@ public class LanguageGradesService {
     }
 
     public LanguageGrades submitUserLanguageGrade(LanguageGradeRequest languageGradeRequest,
-                                                  String subject,
+                                                  UUID subject,
                                                   UUID userId){
 
 
-
-        User emitter = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
-
-        if (!emitter.getId().equals(userId)){
+        if (!subject.equals(userId)){
             LanguageGrades alreadyExistingAssessment = languageGradesRepository.findByUserIdAndRefLanguageAndTranslatedLanguageAndEmitterUserId(
                     userId, languageGradeRequest.getRefLanguage(),
                     languageGradeRequest.getTranslatedLanguage(),
@@ -55,7 +52,7 @@ public class LanguageGradesService {
                 .userId(userId)
                 .refLanguage(languageGradeRequest.getRefLanguage())
                 .translatedLanguage(languageGradeRequest.getTranslatedLanguage())
-                .emitterUserId(emitter.getId())
+                .emitterUserId(subject)
                 .grade(languageGradeRequest.getGrade())
                 .build();
         languageGradesRepository.save(languageGrades);
@@ -63,13 +60,12 @@ public class LanguageGradesService {
         return languageGrades;
     }
 
-    public LanguageGrades editUserLanguageGrade(LanguageGradeRequest languageGradeRequest, String subject,
+    public LanguageGrades editUserLanguageGrade(LanguageGradeRequest languageGradeRequest, UUID subject,
                                                 Long id){
         LanguageGrades languageGrades = languageGradesRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
 
-        User user = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
-        if (!(user.getId().equals(languageGrades.getEmitterUserId()))) throw new UserNotAllowedException();
+        if (!(subject.equals(languageGrades.getEmitterUserId()))) throw new UserNotAllowedException();
         languageGrades.setGrade(languageGradeRequest.getGrade());
         languageGradesRepository.save(languageGrades);
 
@@ -82,9 +78,8 @@ public class LanguageGradesService {
         languageGradesRepository.delete(languageGrades);
     }
 
-    public List<LanguageGrades> getByUserIdAndEmitterId(UUID userId, String subject){
-        User user = userRepository.findByEmail(subject).orElseThrow(NotFoundException::new);
-        List<LanguageGrades> languageGrades = languageGradesRepository.findByUserIdAndEmitterUserId(userId, user.getId());
+    public List<LanguageGrades> getByUserIdAndEmitterId(UUID userId, UUID subject){
+        List<LanguageGrades> languageGrades = languageGradesRepository.findByUserIdAndEmitterUserId(userId, subject);
 
         return languageGrades;
     }
