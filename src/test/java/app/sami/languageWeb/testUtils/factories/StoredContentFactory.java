@@ -8,7 +8,6 @@ public class StoredContentFactory {
 
     public static StoredContentDto storedContentDtoGenerator(){
         return StoredContentDto.builder()
-                .translatedLanguage(Randomize.language())
                 .sourceLanguage(Randomize.language())
                 .name(Randomize.string("file"))
                 .build();
@@ -16,7 +15,6 @@ public class StoredContentFactory {
 
     public static StoredContent storedContentGenerator(){
         return StoredContent.builder()
-                .translatedLanguage(Randomize.language())
                 .sourceLanguage(Randomize.language())
                 .name(Randomize.string("test__"))
                 .build();

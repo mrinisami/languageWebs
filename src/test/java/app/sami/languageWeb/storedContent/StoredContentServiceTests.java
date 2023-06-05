@@ -1,6 +1,5 @@
 package app.sami.languageWeb.storedContent;
 
-import app.sami.languageWeb.error.exceptions.MinioPutUriException;
 import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.storage.Storage;
 import app.sami.languageWeb.testUtils.IntegrationTests;
@@ -47,14 +46,14 @@ public class StoredContentServiceTests extends IntegrationTests {
     }
     @Test
     void matchAddText_ReturnsTrue(){
-        StoredContent result = storedContentService.addText(storedContentTest, userTest.getId());
+        StoredContent result = storedContentService.addContent(storedContentTest, userTest.getId());
         result.setId(null);
         assertThat(result).isEqualTo(storedContentTest.withUserId(userTest.getId()));
     }
 
     @Test
     void matchGetDownloadUrl_ReturnsTrue(){
-        when(storage.getDownloadPresignedUrl(contains("bob"))).thenReturn("test.com");
+        when(storage.getDownloadPresignedUrl(contains(userTest.getId().toString()))).thenReturn("test.com");
         String result = storedContentService.getDownloadUri(userTest.getId(), "bob");
 
         assertThat(result).isEqualTo("test.com");
@@ -67,7 +66,7 @@ public class StoredContentServiceTests extends IntegrationTests {
 
     @Test
     void matchGetDeleteUrl_Returns_True(){
-        when(storage.getDeletePresignedUrl(contains("bob"))).thenReturn("test.com");
+        when(storage.getDeletePresignedUrl(contains(userTest.getId().toString()))).thenReturn("test.com");
         String result = storedContentService.getDeleteUri(userTest.getId(), "bob");
 
         assertThat(result).isEqualTo("test.com");

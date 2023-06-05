@@ -4,7 +4,6 @@ import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import app.sami.languageWeb.storedContent.dtos.StoredContentDto;
 import app.sami.languageWeb.storedContent.dtos.StoredContentURIDto;
 import lombok.AllArgsConstructor;
-import org.simpleframework.xml.Path;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -34,22 +33,21 @@ public class StoredContentController {
 
     @PostMapping("/stored-contents")
     public StoredContentDto addText(@RequestJwtSubject UUID subject, @RequestBody StoredContentDto textInfo){
-        return toStoredContentDto(storedContentService.addText(toStoredContent(textInfo), subject));
+        return toStoredContentDto(storedContentService.addContent(toStoredContent(textInfo), subject));
     }
 
     private StoredContent toStoredContent(StoredContentDto textInfo){
         return StoredContent.builder()
                 .name(textInfo.getName())
                 .sourceLanguage(textInfo.getSourceLanguage())
-                .translatedLanguage(textInfo.getTranslatedLanguage())
                 .build();
     }
 
     private StoredContentDto toStoredContentDto(StoredContent storedContent){
         return StoredContentDto.builder()
                 .sourceLanguage(storedContent.getSourceLanguage())
-                .translatedLanguage(storedContent.getTranslatedLanguage())
                 .name(storedContent.getName())
+                .id(storedContent.getId())
                 .build();
     }
 }

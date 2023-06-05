@@ -10,6 +10,6 @@ import lombok.*;
 @With
 public class StoredContentDto {
     private Language sourceLanguage;
-    private Language translatedLanguage;
     private String name;
+    private Long id;
 }

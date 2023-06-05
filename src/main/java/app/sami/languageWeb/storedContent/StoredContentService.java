@@ -4,7 +4,6 @@ import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.storage.Storage;
 import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.AllArgsConstructor;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -21,7 +20,7 @@ public class StoredContentService {
         return storage.getUploadPresignedUrl(filePath);
     }
 
-    public StoredContent addText(StoredContent storedContent, UUID subject){
+    public StoredContent addContent(StoredContent storedContent, UUID subject){
         storedContent.setUserId(subject);
         StoredContent savedStoredContent = storedContentRepository.save(storedContent);
 
@@ -31,7 +30,7 @@ public class StoredContentService {
     public String getDownloadUri(UUID subject, String fileName){
         StoredContent storedContent = storedContentRepository.findByUserIdAndName(subject, fileName)
                 .orElseThrow(NotFoundException::new);
-        String filePath = String.format("%s/%s", subject, fileName);
+        String filePath = String.format("%s/%s", subject, UUID.randomUUID());
 
         return storage.getDownloadPresignedUrl(filePath);
     }
@@ -39,7 +38,7 @@ public class StoredContentService {
     public String getDeleteUri(UUID subject, String fileName){
         StoredContent storedContent = storedContentRepository.findByUserIdAndName(subject, fileName)
                 .orElseThrow(NotFoundException::new);
-        String filePath = String.format("%s/%s", subject, fileName);
+        String filePath = String.format("%s/%s", subject, UUID.randomUUID());
 
         return storage.getDeletePresignedUrl(filePath);
     }
