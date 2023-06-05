@@ -42,7 +42,7 @@ public class StoredContentControllerTests extends IntegrationTests {
     void getURL_Returns200AndTrue() throws Exception{
         String url = String.format("/store-content/%s/upload-uri", "bobthebuilder");
         String token = authUser(userTest);
-        when(storage.getUploadPresignedUrl(contains("bobthebuilder"))).thenReturn("test.com");
+        when(storage.getUploadPresignedUrl(contains(userTest.getId().toString()))).thenReturn("test.com");
         mockMvc.perform(get(url, token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.url").value("test.com"));
@@ -58,7 +58,7 @@ public class StoredContentControllerTests extends IntegrationTests {
         String url = String.format("/store-content/%s/download-uri", fileName);
         String token = authUser(userTest);
 
-        when(storage.getDownloadPresignedUrl(contains(fileName))).thenReturn("test.com");
+        when(storage.getDownloadPresignedUrl(contains(userTest.getId().toString()))).thenReturn("test.com");
         mockMvc.perform(get(url, token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.url").value("test.com"));
@@ -69,7 +69,7 @@ public class StoredContentControllerTests extends IntegrationTests {
         String fileName = "bobthebuilder";
         String url = String.format("/store-content/%s/download-uri", fileName);
         String token = authUser(userTest);
-        when(storage.getDownloadPresignedUrl(contains(fileName))).thenReturn("test.com");
+        when(storage.getDownloadPresignedUrl(contains(userTest.getId().toString()))).thenReturn("test.com");
         mockMvc.perform(get(url, token))
                 .andExpect(status().isNotFound());
     }
@@ -95,7 +95,7 @@ public class StoredContentControllerTests extends IntegrationTests {
         String url = String.format("/store-content/%s/delete-uri", fileName);
         String token = authUser(userTest);
 
-        when(storage.getDeletePresignedUrl(contains(fileName))).thenReturn("test.com");
+        when(storage.getDeletePresignedUrl(contains(userTest.getId().toString()))).thenReturn("test.com");
         mockMvc.perform(get(url, token))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.url").value("test.com"));

@@ -1,4 +1,5 @@
 DELETE FROM language_grades;
+DELETE FROM request;
 DELETE FROM stored_content;
 DELETE from users;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -24,3 +25,30 @@ VALUES(333333, '943050df-bb81-488d-9420-11ef7ebef3fa', '943050df-bb81-488d-9420-
 
 INSERT INTO language_grades(id, user_id, emitter_user_id, ref_language, translated_language, grade)
 VALUES(3838383, '943050df-bb81-488d-9420-11ef7ebef3fa', '22a161e2-c34e-45af-be8c-27ac5d86b1b3', 'ARABIC', 'FRENCH', 89);
+
+INSERT INTO stored_content(id, source_language, name, user_id)
+VALUES(132, 'ENGLISH', 'toto', '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO stored_content(id, source_language, name, user_id)
+VALUES(1324, 'ENGLISH', 'toto', 'f675c9f4-2af5-4834-862e-2e8aab437392');
+
+INSERT INTO stored_content(id, source_language, name, user_id)
+VALUES(322, 'ENGLISH', 'pota', '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO stored_content(id, source_language, name, user_id)
+VALUES(342, 'ENGLISH', 'bob', '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO stored_content(id, source_language, name, user_id)
+VALUES(462, 'FRENCH', 'tomat', '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO stored_content(id, source_language, name, user_id)
+VALUES(582, 'ARABIC', 'pleasure', '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO request(id, translated_language, source_language, content_id, status)
+VALUES(2343,  'ARABIC', 'ENGLISH', 132, 'PENDING');
+
+INSERT INTO request(id, translated_language, source_language, content_id, status)
+VALUES(2373,  'FRENCH', 'ENGLISH', 132, 'PENDING');
+
+INSERT INTO request(id, translated_language, source_language, content_id, status)
+VALUES(23721, 'FRENCH', 'ENGLISH', 342, 'PENDING');
