@@ -1,26 +1,24 @@
-interface UserRoutes {
-  getUsers: string;
-  login: string;
-  getUserInfo: (userId: string | undefined) => string;
-}
-
-export const user: UserRoutes = {
+export const user = {
   getUsers: "/public/users",
   login: `/auth/authenticate`,
   getUserInfo: (userId: string | undefined) => `/public/users/${userId}`
 };
 
-interface LanguageRoutes {
-  getUserGrades: (userId: string | undefined) => string;
-  getListofEmittedGrades: (userId: string | undefined, emitterUserId: string) => string;
-  editLanguageGrades: (userId: string | undefined, languageGradeId: number | undefined) => string;
-  addLanguageGrade: (userId: string | undefined) => string;
-}
-export const languageGrades: LanguageRoutes = {
+export const languageGrades = {
   getUserGrades: (userId: string | undefined) => `/public/users/${userId}/languageGrades/summary`,
   getListofEmittedGrades: (userId: string | undefined, emitterUserId: string) =>
     `/users/${userId}/languageGrades/${emitterUserId}`,
   editLanguageGrades: (userId: string | undefined, languageGradeId: number | undefined) =>
     `/users/${userId}/languageGrade/${languageGradeId}`,
-  addLanguageGrade: (userId) => `/users/${userId}/languages/grade`
+  addLanguageGrade: (userId: string | undefined) => `/users/${userId}/languages/grade`
+};
+
+export const request = {
+  getLanguageStats: "/public/requests/summary",
+  getFilteredRequests: "/public/requests",
+  getUploadUri: "/storage/upload-uri",
+  addRequest: (userId: string) => `/users/${userId}/requests`,
+  editRequest: (userId: string, requestId: number | undefined) => `/users/${userId}/requests/${requestId}`,
+  getRequest: (requestId: number | undefined) => `/requests/${requestId}`,
+  deleteRequest: (userId: string, requestId: number | undefined) => `/users/${userId}/requests/${requestId}`
 };

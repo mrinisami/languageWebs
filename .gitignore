@@ -18,4 +18,6 @@
 !gradlew.bat
 !README.md
 !settings.gradle
+!minio.Dockerfile
+!bin.yml
 

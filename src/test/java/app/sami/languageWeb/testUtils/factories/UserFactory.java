@@ -8,8 +8,8 @@ public class UserFactory {
 
     public static User userGenerator(){
         User user = User.builder()
-                .userPassword(Randomize.string("test"))
-                .userRole(Role.USER)
+                .password(Randomize.string("test"))
+                .role(Role.USER)
                 .email(Randomize.email())
                 .firstName(Randomize.name())
                 .lastName(Randomize.name())
@@ -20,8 +20,8 @@ public class UserFactory {
 
     public static User evaluatorGenerator(){
         User user = User.builder()
-                .userPassword(Randomize.string("test"))
-                .userRole(Role.EVALUATOR)
+                .password(Randomize.string("test"))
+                .role(Role.EVALUATOR)
                 .email(Randomize.email())
                 .firstName(Randomize.name())
                 .lastName(Randomize.name())

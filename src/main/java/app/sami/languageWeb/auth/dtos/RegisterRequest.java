@@ -1,5 +1,6 @@
 package app.sami.languageWeb.auth.dtos;
 
+import app.sami.languageWeb.auth.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,5 @@ public class RegisterRequest {
     private String lastName;
     private String email;
     private String userPassword;
+    private Role role;
 }

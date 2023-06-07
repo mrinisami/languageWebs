@@ -3,6 +3,7 @@ export interface UserSearch {
   firstName: string;
   lastName: string;
   dateJoined: string | null;
+  avatarUri: string | null;
 }
 
 interface UserEndPoints {

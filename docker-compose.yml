@@ -26,12 +26,15 @@ services:
 
   minio:
     container_name: 'minio'
-    image: minio/minio
+    build:
+      dockerfile: minio.Dockerfile
+    image: language-web/minio
     ports:
       - "9000:9000"
       - "9001:9001"
     environment:
       MINIO_ROOT_USER: dev
       MINIO_ROOT_PASSWORD: admin123
-    entrypoint: sh
-    command: -c 'mkdir -p /data/language-web && minio server --console-address ":9001" /data'
+    command: server --console-address ":9001" /data
+    volumes:
+      - "./config/minio/dev:/tmp/dev"
