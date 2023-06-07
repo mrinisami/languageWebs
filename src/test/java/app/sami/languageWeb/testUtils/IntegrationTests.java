@@ -64,7 +64,7 @@ public abstract class IntegrationTests {
     }
     protected String authUser(User user) throws Exception {
         Object body = AuthenticationRequest.builder()
-                .id(user.getId())
+                .email(user.getEmail())
                 .userPassword(user.getUserPassword())
                 .build();
         String response =  mockMvc.perform(post("/auth/authenticate")

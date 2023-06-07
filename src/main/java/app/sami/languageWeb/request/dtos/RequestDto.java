@@ -20,4 +20,6 @@ public class RequestDto {
     private String name;
     private Instant modifiedAt;
     private Status status;
+    private Double avgTime;
+    private String filePath;
 }

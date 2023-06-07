@@ -1,7 +1,6 @@
 import { Button, Grid } from "@mui/material";
 import useAxios from "axios-hooks";
 import React, { useState } from "react";
-import { env } from "../utils/env";
 
 export default () => {
   const [{ data, loading, error }, executePost] = useAxios(
@@ -19,12 +18,8 @@ export default () => {
 
   const onClickUpload = () => {
     const formData = new FormData();
-    console.log(selectedFile);
     formData.append("File", selectedFile);
-
-    console.log(formData);
-
-    executePost({ data: { file: selectedFile } });
+    //executePost({ data: { file: selectedFile } });
   };
   return (
     <Grid item>

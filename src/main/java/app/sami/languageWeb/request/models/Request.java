@@ -4,6 +4,8 @@ import app.sami.languageWeb.language.models.Language;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,6 +17,7 @@ import java.util.UUID;
 @Table
 @Entity(name = "request")
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +28,13 @@ public class Request {
     private Language sourceLanguage;
     @Enumerated(EnumType.STRING)
     private Language translatedLanguage;
-    private Long contentId;
+    private UUID userId;
     private Double price;
     @CreatedDate
     private Instant createdAt;
-    @CreatedDate
+    @LastModifiedDate
     private Instant modifiedAt;
+    private Double avgTime;
+    private String filePath;
+    private String name;
 }

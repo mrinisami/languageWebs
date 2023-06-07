@@ -17,6 +17,7 @@ public class RequestDtoFactory {
                 .translatedLanguage(Randomize.language())
                 .price(Randomize.grade())
                 .status(Randomize.status())
+
                 .build();
     }
 }

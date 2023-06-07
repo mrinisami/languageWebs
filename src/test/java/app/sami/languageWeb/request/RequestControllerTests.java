@@ -1,57 +1,58 @@
 package app.sami.languageWeb.request;
 
+import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.request.dtos.EditRequestDto;
-import app.sami.languageWeb.request.dtos.RequestsDto;
+import app.sami.languageWeb.request.dtos.FilterDto;
 import app.sami.languageWeb.request.mapper.RequestMapper;
 import app.sami.languageWeb.request.models.Request;
-import app.sami.languageWeb.storedContent.StoredContent;
-import app.sami.languageWeb.storedContent.StoredContentRepository;
+import app.sami.languageWeb.storage.Storage;
 import app.sami.languageWeb.testUtils.IntegrationTests;
 import app.sami.languageWeb.testUtils.Randomize;
 import app.sami.languageWeb.testUtils.factories.RequestDtoFactory;
-import app.sami.languageWeb.testUtils.factories.StoredContentFactory;
 import app.sami.languageWeb.testUtils.factories.UserFactory;
 import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
+import static org.mockito.ArgumentMatchers.contains;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class RequestControllerTests extends IntegrationTests {
 
-    private User userTest;
-    private StoredContent storedContentTest;
-    private StoredContent storedContentTest2;
-    private StoredContent storedContentTest3;
-    private Request requestTest = RequestDtoFactory.generateRequest();
-    private Request requestTest2 = RequestDtoFactory.generateRequest();
-    private Request requestTest3 = RequestDtoFactory.generateRequest();
     @Autowired
     UserRepository userRepository;
     @Autowired
-    StoredContentRepository storedContentRepository;
-    @Autowired
     RequestRepository requestRepository;
+
+    @MockBean
+    @Qualifier("storage")
+    Storage storage;
+    private User userTest;
+    private Request requestTest;
+    private Request requestTest2;
+    private Request requestTest3;
 
     @BeforeEach
     void setup(){
         userTest = userRepository.save(UserFactory.userGenerator());
-        storedContentTest = storedContentRepository.save(StoredContentFactory.storedContentGenerator()
-                .withUserId(userTest.getId()));
-        storedContentTest2 = storedContentRepository.save(StoredContentFactory.storedContentGenerator()
-                .withUserId(userTest.getId()));
-        storedContentTest3 = storedContentRepository.save(StoredContentFactory.storedContentGenerator()
-                .withUserId(userTest.getId()));
-        requestTest = requestRepository.save(requestTest.withContentId(storedContentTest.getId()));
-        requestTest2 = requestRepository.save(requestTest.withContentId(storedContentTest.getId()));
+        requestTest = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
+        requestTest2 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
 
-        requestTest3 = requestRepository.save(requestTest.withContentId(storedContentTest2.getId()))
-                ;
+        requestTest3 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
     }
 
     @Test
@@ -92,4 +93,54 @@ public class RequestControllerTests extends IntegrationTests {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void requestStatSummary_Returns200() throws Exception{
+        String url = String.format("/public/requests/summary");
+
+        mockMvc.perform(get(url))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void getUploadUri_Returns200() throws Exception{
+        String token = authUser(userTest);
+        String fileName = "bob";
+        String url = String.format("/requests/%s/upload-uri", fileName);
+        when(storage.getUploadPresignedUrl(contains(fileName))).thenReturn("test.com");
+
+        mockMvc.perform(get(url, token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.url").value("test.com"));
+    }
+    @Test
+    void getDownloadUri_Returns200() throws Exception{
+        String token = authUser(userTest);
+        String fileName = "bob";
+        String url = String.format("/requests/%s/download-uri", fileName);
+        when(storage.getDownloadPresignedUrl(contains(fileName))).thenReturn("test.com");
+
+        mockMvc.perform(get(url, token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.url").value("test.com"))
+                .andExpect(jsonPath("$.fileName").value(fileName));
+    }
+
+    @Test
+    void getFilteredRequests_Returns200() throws Exception{
+        String url = "/public/requests";
+        List<String> languages = Arrays.asList(requestTest.getSourceLanguage().toString());
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.addAll("sourceLanguages", languages);
+        FilterDto filterDto = FilterDto.builder()
+                .priceGt(30.0)
+                .priceLt(70.0)
+                .build();
+
+        mockMvc.perform(get(url)
+                .param("gtPrice", String.valueOf(filterDto.getPriceGt()))
+                .param("ltPrice", String.valueOf(filterDto.getPriceLt()))
+                        .params(params))
+                .andExpect(status().isOk());
+
+    }
 }

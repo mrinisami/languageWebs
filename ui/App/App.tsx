@@ -6,13 +6,14 @@ import { Grid } from "@mui/material";
 import NavBar from "../Navigation/NavBar";
 import Profile from "../Profile/Profile";
 import Login from "../Auth/Login";
-import LanguageReviews from "../Profile/LanguageReviews";
+import Request from "../Request/Request";
 
 export const App = () => {
   return (
     <Grid container>
       <NavBar />
       <Routes>
+        <Route path={routes.request} element={<Request />} />
         <Route path={routes.home} element={<Home />} />
         <Route path={routes.login} element={<Login />} />
         <Route path="/users/:userId/profile/:tabValue" element={<Profile />} />

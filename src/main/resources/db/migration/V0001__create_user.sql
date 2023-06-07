@@ -13,18 +13,6 @@ CREATE TABLE users (
 	UNIQUE (email)
 );
 
---stored-content
-
-CREATE TABLE stored_content(
-	id BIGSERIAL PRIMARY KEY,
-	source_language varchar(25) NOT NULL,
-	name varchar(50) NOT NULL,
-	created_at timestamp(6),
-	modified_at timestamp(6),
-	user_id uuid NOT NULL REFERENCES users(id),
-	UNIQUE(name, user_id)
-);
-
 --languages
 
 CREATE TABLE language_grades(
@@ -44,8 +32,11 @@ CREATE TABLE request(
     source_language varchar(25) NOT NULL,
     translated_language varchar(25) NOT NULL,
     status varchar(10) NOT NULL,
-    content_id BIGSERIAL NOT NULL REFERENCES stored_content(id),
+    user_id uuid NOT NULL REFERENCES users(id),
+    name varchar(30),
+    file_path varchar(30),
     created_at timestamp(6),
     modified_at timestamp(6),
+    avg_time float(53),
     price float(53)
 )
