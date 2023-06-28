@@ -12,6 +12,6 @@ import java.util.UUID;
 @NoArgsConstructor
 
 public class AuthenticationRequest {
-    private UUID id;
+    private String email;
     private String userPassword;
 }

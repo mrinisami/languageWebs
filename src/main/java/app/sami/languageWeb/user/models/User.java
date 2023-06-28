@@ -4,15 +4,9 @@ import app.sami.languageWeb.auth.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "users")
@@ -22,7 +16,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @With
-public class User implements UserDetails{
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -30,47 +24,13 @@ public class User implements UserDetails{
     private String firstName;
     private String lastName;
     private String email;
-    private String userPassword;
-
+    @Column(name = "userPassword")
+    private String password;
+    private String avatarUri;
     @CreatedDate
     private Instant createdAt;
 
+    @Column(name= "userRole")
     @Enumerated(EnumType.STRING)
-    private Role userRole;
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return userPassword;
-    }
-
-    @Override
-    public String getUsername() {
-        return id.toString();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    private Role role;
 }

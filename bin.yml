@@ -1,0 +1,17 @@
+name: language-web
+up:
+  - name: docker-compose
+    up: docker-compose up -d
+    down: docker-compose down
+  - name: sleep
+    up: timeout 3
+  - name: set minio credentials
+    up: docker exec minio mc alias set local http://localhost:9000 dev admin123
+  - name: create bucket
+    up: docker exec minio mc mb local/language-web
+    up_unless: docker exec minio mc ls local/language-web
+  - name: add local files to bucket
+    up: docker exec minio mc cp --recursive /tmp/dev local/language-web
+
+    
+

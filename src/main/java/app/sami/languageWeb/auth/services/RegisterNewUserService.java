@@ -21,9 +21,9 @@ public class RegisterNewUserService {
     public AuthenticationResponse register(RegisterRequest request) {
         User user = User.builder().firstName(request.getFirstName())
                 .lastName(request.getLastName())
-                .userPassword(passwordEncoder.encode(request.getUserPassword()))
+                .password(passwordEncoder.encode(request.getUserPassword()))
+                .role(request.getRole() == null ? Role.USER : request.getRole())
                 .email(request.getEmail())
-                .userRole(Role.USER)
                 .build();
         userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);

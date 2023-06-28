@@ -1,6 +1,5 @@
 package app.sami.languageWeb.auth.services;
 
-import app.sami.languageWeb.auth.Role;
 import app.sami.languageWeb.user.models.User;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
@@ -29,13 +28,13 @@ public class JwtService {
     }
     public String generateToken(User user, Map<String, Object> extraClaims){
         JWTClaimsSet claims = new JWTClaimsSet.Builder().jwtID(UUID.randomUUID().toString())
-                .subject(user.getUsername())
+                .subject(user.getId().toString())
                 .claim("firstName", user.getFirstName())
                 .claim("lastName", user.getLastName())
                 .claim("userId", user.getId())
                 .expirationTime(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)))
                 .issueTime(Date.from(Instant.now()))
-                .claim("roles", user.getUserRole().impliedRoles(user.getUserRole()))
+                .claim("roles", user.getRole().impliedRoles(user.getRole()))
                 .issuer(issuer)
                 .build();
         JWSHeader headers = new JWSHeader.Builder(JWSAlgorithm.RS256)

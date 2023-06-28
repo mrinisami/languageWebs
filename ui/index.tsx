@@ -5,14 +5,20 @@ import App from "./App";
 import { configureAxiosHeaders } from "./utils/axios";
 import { localStorage } from "./utils/localstorage";
 import { ProvideToken } from "./context/TokenContext";
+import { ThemeProvider } from "@emotion/react";
+import { themeDark } from "./utils/theme";
+import { CssBaseline } from "@mui/material";
 
 configureAxiosHeaders(localStorage.token.get());
 
 const root = ReactDOM.createRoot(document.getElementById("app") as HTMLElement);
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ThemeProvider theme={themeDark}>
+      <CssBaseline />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>
 );
