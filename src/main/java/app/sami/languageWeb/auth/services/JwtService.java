@@ -29,7 +29,7 @@ public class JwtService {
     }
     public String generateToken(User user, Map<String, Object> extraClaims){
         JWTClaimsSet claims = new JWTClaimsSet.Builder().jwtID(UUID.randomUUID().toString())
-                .subject(user.getUsername())
+                .subject(user.getId().toString())
                 .claim("firstName", user.getFirstName())
                 .claim("lastName", user.getLastName())
                 .claim("userId", user.getId())

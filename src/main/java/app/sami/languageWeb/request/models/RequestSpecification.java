@@ -1,12 +1,10 @@
-package app.sami.languageWeb.utils;
+package app.sami.languageWeb.request.models;
 
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.request.dtos.FilterDto;
-import app.sami.languageWeb.request.models.Request;
-import jakarta.persistence.criteria.Root;
-import org.hibernate.type.EntityType;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -18,6 +16,8 @@ public class RequestSpecification {
                 .and(translatedLanguageIn(filterDto.getTranslatedLanguages()))
                 .and(priceGt(filterDto.getPriceGt()))
                 .and(priceLt(filterDto.getPriceLt()))
+                .and(afterDate(filterDto.getDueDate()))
+                .and(status(filterDto.getStatuses()))
                 .and(userOrComm(filterDto.getUserId()));
     }
     static Specification<Request> sourceLanguageIn(List<Language> languages){
@@ -55,6 +55,14 @@ public class RequestSpecification {
         };
     }
 
+    static Specification<Request> afterDate(Instant date){
+        return (root, query, criteriaBuilder) -> {
+            if (Objects.isNull(date)){
+                return criteriaBuilder.conjunction();
+            }
+            return criteriaBuilder.greaterThanOrEqualTo(root.get("dueDate"), date);
+        };
+    }
     static Specification<Request> userOrComm(UUID userId){
         return (root, query, criteriaBuilder) -> {
             if (Objects.isNull(userId)){
@@ -63,4 +71,14 @@ public class RequestSpecification {
             return criteriaBuilder.equal(root.get("userId"), userId);
         };
     }
+
+    static Specification<Request> status(List<Status> statuses){
+        return (root, query, criteriaBuilder) -> {
+            if (Objects.isNull(statuses)){
+                return criteriaBuilder.conjunction();
+            }
+            return root.get("status").in(statuses);
+        };
+    }
+
 }

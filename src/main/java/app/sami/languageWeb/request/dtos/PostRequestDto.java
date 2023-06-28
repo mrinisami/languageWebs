@@ -1,18 +1,21 @@
 package app.sami.languageWeb.request.dtos;
 
 import app.sami.languageWeb.language.models.Language;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
+@Data
 @AllArgsConstructor
 @Builder
-@Data
+@With
 @NoArgsConstructor
-public class EditRequestDto {
+public class PostRequestDto {
     private Double price;
+    private Language sourceLanguage;
+    private Language translatedLanguage;
+    private String name;
+    private String filePath;
+    private String description;
     private Long dueDate;
 }

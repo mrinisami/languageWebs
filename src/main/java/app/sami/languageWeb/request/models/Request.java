@@ -1,6 +1,7 @@
 package app.sami.languageWeb.request.models;
 
 import app.sami.languageWeb.language.models.Language;
+import app.sami.languageWeb.user.models.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,13 +29,21 @@ public class Request {
     private Language sourceLanguage;
     @Enumerated(EnumType.STRING)
     private Language translatedLanguage;
+
+    @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
+    @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
+    private User user;
+    @Column(name = "user_id")
     private UUID userId;
     private Double price;
     @CreatedDate
     private Instant createdAt;
     @LastModifiedDate
     private Instant modifiedAt;
-    private Double avgTime;
+    private Double estimatedTime;
+    private Integer nbWords;
+    private String description;
     private String filePath;
     private String name;
+    private Instant dueDate;
 }

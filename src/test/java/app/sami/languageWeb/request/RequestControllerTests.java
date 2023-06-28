@@ -3,8 +3,10 @@ package app.sami.languageWeb.request;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.request.dtos.EditRequestDto;
 import app.sami.languageWeb.request.dtos.FilterDto;
+import app.sami.languageWeb.request.dtos.RequestLanguageStatsDto;
 import app.sami.languageWeb.request.mapper.RequestMapper;
 import app.sami.languageWeb.request.models.Request;
+import app.sami.languageWeb.request.models.RequestLanguageStats;
 import app.sami.languageWeb.storage.Storage;
 import app.sami.languageWeb.testUtils.IntegrationTests;
 import app.sami.languageWeb.testUtils.Randomize;
@@ -42,6 +44,7 @@ public class RequestControllerTests extends IntegrationTests {
     @Qualifier("storage")
     Storage storage;
     private User userTest;
+    private User userTest1;
     private Request requestTest;
     private Request requestTest2;
     private Request requestTest3;
@@ -49,27 +52,20 @@ public class RequestControllerTests extends IntegrationTests {
     @BeforeEach
     void setup(){
         userTest = userRepository.save(UserFactory.userGenerator());
-        requestTest = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
+        userTest1 = userRepository.save(UserFactory.userGenerator());
+        requestTest = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId())
+                .withUser(userTest));
         requestTest2 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
-
         requestTest3 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
     }
 
-    @Test
-    void getRequestList_Returns200() throws Exception{
-        String token = authUser(userTest);
-        String url = String.format("/users/%s/requests", userTest.getId());
-
-        mockMvc.perform(get(url, token))
-                .andExpect(status().isOk());
-    }
 
     @Test
     void createRequest_Returns200()throws Exception {
         String token = authUser(userTest);
         String url = String.format("/users/%s/requests", userTest.getId());
 
-        mockMvc.perform(post(url, RequestMapper.toRequestDto(requestTest), token))
+        mockMvc.perform(post(url, RequestMapper.toPostRequestDto(requestTest), token))
                 .andExpect(status().isOk());
     }
 
@@ -77,7 +73,9 @@ public class RequestControllerTests extends IntegrationTests {
     void editRequest_Returns200() throws Exception{
         String token = authUser(userTest);
         String url = String.format("/users/%s/requests/%s", userTest.getId(), requestTest.getId());
-        EditRequestDto editRequestDto = new EditRequestDto(Randomize.grade());
+        EditRequestDto editRequestDto = EditRequestDto.builder()
+                .price(30.2)
+                .build();
 
         mockMvc.perform(put(url, editRequestDto, token))
                 .andExpect(status().isOk());
@@ -87,7 +85,9 @@ public class RequestControllerTests extends IntegrationTests {
     void givenDifferingUserIds_ThrowsUserNotAllowed() throws Exception {
         String token = authUser(userTest);
         String url = String.format("/users/%s/requests/%s", UUID.randomUUID(), requestTest.getId());
-        EditRequestDto editRequestDto = new EditRequestDto(Randomize.grade());
+        EditRequestDto editRequestDto =  EditRequestDto.builder()
+                .price(30.2)
+                .build();
 
         mockMvc.perform(put(url, editRequestDto, token))
                 .andExpect(status().isForbidden());
@@ -96,33 +96,23 @@ public class RequestControllerTests extends IntegrationTests {
     @Test
     void requestStatSummary_Returns200() throws Exception{
         String url = String.format("/public/requests/summary");
-
+        List<RequestLanguageStatsDto> stats = requestRepository.findNbRequestsPerLanguages().stream()
+                .map(RequestMapper::toRequestLanguageStats).toList();
         mockMvc.perform(get(url))
                 .andExpect(status().isOk());
+
     }
 
     @Test
     void getUploadUri_Returns200() throws Exception{
         String token = authUser(userTest);
         String fileName = "bob";
-        String url = String.format("/requests/%s/upload-uri", fileName);
+        String url = String.format("/storage/upload-uri", fileName);
         when(storage.getUploadPresignedUrl(contains(fileName))).thenReturn("test.com");
 
-        mockMvc.perform(get(url, token))
+        mockMvc.perform(get(url, token).param("fileName", fileName))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.url").value("test.com"));
-    }
-    @Test
-    void getDownloadUri_Returns200() throws Exception{
-        String token = authUser(userTest);
-        String fileName = "bob";
-        String url = String.format("/requests/%s/download-uri", fileName);
-        when(storage.getDownloadPresignedUrl(contains(fileName))).thenReturn("test.com");
-
-        mockMvc.perform(get(url, token))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.url").value("test.com"))
-                .andExpect(jsonPath("$.fileName").value(fileName));
     }
 
     @Test
@@ -142,5 +132,23 @@ public class RequestControllerTests extends IntegrationTests {
                         .params(params))
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    void validDeleteRequest_Returns200() throws Exception{
+        String url = String.format("/users/%s/requests/%s", requestTest.getUserId(), requestTest.getId());
+        String token = authUser(userTest);
+
+        mockMvc.perform(delete(url, token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void wrongUserIdDeleteRequest_Returns404() throws Exception{
+        String url = String.format("/users/%s/requests/%s", requestTest.getUserId(), requestTest.getId());
+        String token = authUser(userTest1);
+
+        mockMvc.perform(delete(url, token))
+                .andExpect(status().isForbidden());
     }
 }

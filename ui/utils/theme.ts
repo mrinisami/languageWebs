@@ -11,7 +11,7 @@ export const themeDark = createTheme({
     MuiTableCell: { defaultProps: { align: "center" } },
     MuiPaper: {
       defaultProps: { elevation: 20 },
-      styleOverrides: { root: { background: "rgba(255, 255, 255, 0.16)" } }
+      styleOverrides: { root: { background: "rgba(255, 255, 255, 0.16)", padding: 12 } }
     }
   }
 });

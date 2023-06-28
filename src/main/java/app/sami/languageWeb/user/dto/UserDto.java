@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserDto {
     private UUID id;
-
+    private String avatarUri;
     private String firstName;
     private String lastName;
     private Date dateJoined;

@@ -1,6 +1,7 @@
 package app.sami.languageWeb.user.models;
 
 import app.sami.languageWeb.auth.Role;
+import app.sami.languageWeb.request.models.Request;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -22,7 +23,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @With
-public class User implements UserDetails{
+public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -31,46 +32,10 @@ public class User implements UserDetails{
     private String lastName;
     private String email;
     private String userPassword;
-
+    private String avatarUri;
     @CreatedDate
     private Instant createdAt;
 
     @Enumerated(EnumType.STRING)
     private Role userRole;
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return userPassword;
-    }
-
-    @Override
-    public String getUsername() {
-        return id.toString();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

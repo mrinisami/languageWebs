@@ -1,4 +1,4 @@
-import { Avatar, Button, Typography, Chip, Paper, Grid } from "@mui/material";
+import { Avatar, Button, Typography, Chip, Paper, Grid, IconButton } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
@@ -49,13 +49,18 @@ export default () => {
         label={isLoggedIn ? getFormattedNameFromToken(localStorage.getItem("token")) : "Guest"}
       />
       {isDropDown ? (
-        <Paper>
+        <Paper sx={{ mt: "1rem", position: "absolute" }}>
           <Grid container direction="column">
             {isLoggedIn ? (
-              <Grid item>
-                <Button startIcon={<AccountCircleIcon />} onClick={onClickProfile}>
+              <Grid item container alignItems="center">
+                <Grid item>
+                  <IconButton onClick={onClickProfile}>
+                    <AccountCircleIcon />
+                  </IconButton>
+                </Grid>
+                <Grid item>
                   <Typography>Profile</Typography>
-                </Button>
+                </Grid>
               </Grid>
             ) : (
               <></>

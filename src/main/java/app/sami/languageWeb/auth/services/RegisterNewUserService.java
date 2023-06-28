@@ -22,8 +22,8 @@ public class RegisterNewUserService {
         User user = User.builder().firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .userPassword(passwordEncoder.encode(request.getUserPassword()))
+                .userRole(request.getRole() == null ? Role.USER : request.getRole())
                 .email(request.getEmail())
-                .userRole(Role.USER)
                 .build();
         userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);

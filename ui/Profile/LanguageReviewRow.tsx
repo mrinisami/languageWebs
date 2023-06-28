@@ -143,7 +143,7 @@ export default (props: Props) => {
         <Box sx={{ position: "relative", display: "inline-flex" }}>
           <CircularProgress
             variant="determinate"
-            value={props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 100}
+            value={props.userLanguageGrade ? props.userLanguageGrade.grade : 100}
             thickness={7}
             sx={{
               color: circleProgressColor(props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 0)
@@ -154,9 +154,9 @@ export default (props: Props) => {
               variant="subtitle2"
               component="div"
               fontWeight="bold"
-              color={circleProgressColor(props.userLanguageGrade !== null ? props.userLanguageGrade.grade : 0)}
+              color={circleProgressColor(props.userLanguageGrade ? props.userLanguageGrade.grade : 0)}
             >
-              {props.userLanguageGrade !== null ? props.userLanguageGrade.grade : ""}
+              {props.userLanguageGrade ? props.userLanguageGrade.grade : ""}
             </Typography>
           </Box>
         </Box>

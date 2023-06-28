@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
-@Transactional(dontRollbackOn = RuntimeException.class)
 @ActiveProfiles("test")
 @Import(TestConfig.class)
 public abstract class IntegrationTests {
@@ -61,6 +60,11 @@ public abstract class IntegrationTests {
     }
     protected MockHttpServletRequestBuilder put(String url){
         return MockMvcRequestBuilders.put(url).contentType(MediaType.APPLICATION_JSON);
+    }
+
+    protected MockHttpServletRequestBuilder delete(String url, String token) {
+        return MockMvcRequestBuilders.delete(url)
+                .header("authorization", "Bearer " + token);
     }
     protected String authUser(User user) throws Exception {
         Object body = AuthenticationRequest.builder()

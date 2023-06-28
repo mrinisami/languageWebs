@@ -2,6 +2,7 @@ package app.sami.languageWeb.request;
 
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.request.dtos.EditRequestDto;
+import app.sami.languageWeb.request.dtos.PostRequestDto;
 import app.sami.languageWeb.request.dtos.RequestDto;
 import app.sami.languageWeb.request.models.Request;
 import app.sami.languageWeb.request.models.Status;
@@ -44,7 +45,7 @@ public class RequestServiceTests extends IntegrationTests {
 
     @Test
     void matchCreateRequest_ReturnsTrue(){
-        RequestDto requestDto = RequestDtoFactory.generateRequestDto()
+        PostRequestDto requestDto = RequestDtoFactory.generatePostRequestDto()
                 .withTranslatedLanguage(Language.ABKHAZ)
                 .withSourceLanguage(Language.SAMOAN);
         Request result = requestService.createRequest(requestDto, userTest.getId());
@@ -55,6 +56,7 @@ public class RequestServiceTests extends IntegrationTests {
                 .translatedLanguage(Language.ABKHAZ)
                 .sourceLanguage(Language.SAMOAN)
                 .userId(userTest.getId())
+                .name(requestDto.getName())
                 .build();
 
         assertThat(result).isEqualTo(expected);
@@ -62,7 +64,9 @@ public class RequestServiceTests extends IntegrationTests {
 
     @Test
     void matchingEditRequest_ReturnsTrue(){
-        EditRequestDto editRequestDto = new EditRequestDto(Randomize.grade());
+        EditRequestDto editRequestDto =  EditRequestDto.builder()
+                .price(30.2)
+                .build();
         Request request = requestRepository.save(Request.builder()
                 .status(Status.PENDING)
                 .price(30.0)
@@ -81,18 +85,9 @@ public class RequestServiceTests extends IntegrationTests {
         String name = UUID.randomUUID().toString();
         String filePath = String.format("%s/%s", userTest.getId(), name);
         when(storage.getUploadPresignedUrl(contains(name))).thenReturn("test.com");
-        String result = requestService.getUploadUri(userTest.getId(), name);
+        String result = requestService.getUploadUri(name);
 
         assertThat(result).isEqualTo("test.com");
     }
 
-    @Test
-    void matchingDownloadUrl_ReturnsTrue(){
-        String name = UUID.randomUUID().toString();
-        String filePath = String.format("%s/%s", userTest.getId(), name);
-        when(storage.getDownloadPresignedUrl(contains(name))).thenReturn("test.com");
-        String result = requestService.getDownloadUri(userTest.getId(), name);
-
-        assertThat(result).isEqualTo("test.com");
-    }
 }

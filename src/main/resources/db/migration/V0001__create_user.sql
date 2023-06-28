@@ -10,6 +10,7 @@ CREATE TABLE users (
     user_password varchar(252) NOT NULL,
     created_at timestamp(6),
     user_role varchar(10),
+    avatar_uri varchar(600),
 	UNIQUE (email)
 );
 
@@ -19,8 +20,8 @@ CREATE TABLE language_grades(
     id BIGSERIAL PRIMARY KEY,
     ref_language varchar(25) NOT NULL,
     translated_language varchar(25) NOT NULL,
-    user_id uuid NOT NULL REFERENCES users(id),
-    emitter_user_id uuid NOT NULL REFERENCES users(id),
+    user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    emitter_user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     grade float(53),
     UNIQUE(user_id, emitter_user_id, ref_language, translated_language)
 );
@@ -32,11 +33,14 @@ CREATE TABLE request(
     source_language varchar(25) NOT NULL,
     translated_language varchar(25) NOT NULL,
     status varchar(10) NOT NULL,
-    user_id uuid NOT NULL REFERENCES users(id),
+    user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     name varchar(30),
-    file_path varchar(30),
+    file_path varchar(100),
     created_at timestamp(6),
     modified_at timestamp(6),
-    avg_time float(53),
+    estimated_time float(53),
+    nb_words integer,
+    description varchar(4000),
+    due_date timestamp(6),
     price float(53)
 )

@@ -7,7 +7,9 @@ import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,17 +18,16 @@ public class AuthenticateUserService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    private final AuthenticationManager authenticationManager;
-
+    private final PasswordEncoder passwordEncoder;
 
     public AuthenticationResponse authenticate(AuthenticationRequest request){
-        /*authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                request.getEmail(),
-                request.getUserPassword()
-        ));*/
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(NotFoundException::new
                 );
+        if (!passwordEncoder.matches(request.getUserPassword(), user.getUserPassword())){
+            throw new BadCredentialsException("Wrong password-username combination");
+        }
+
         String jwtToken = jwtService.generateToken(user);
 
         return AuthenticationResponse

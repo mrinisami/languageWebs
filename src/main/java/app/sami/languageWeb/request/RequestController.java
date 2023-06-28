@@ -1,43 +1,48 @@
 package app.sami.languageWeb.request;
 
+import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.request.dtos.*;
 import app.sami.languageWeb.request.mapper.RequestMapper;
+import app.sami.languageWeb.request.models.Request;
+import app.sami.languageWeb.request.models.Status;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
-import app.sami.languageWeb.utils.RequestSpecification;
+import app.sami.languageWeb.request.models.RequestSpecification;
+import app.sami.languageWeb.user.models.User;
+import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.AllArgsConstructor;
+import org.simpleframework.xml.Path;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
-
-import static app.sami.languageWeb.request.mapper.RequestMapper.toRequestLanguageStats;
 
 @RestController
 @AllArgsConstructor
 public class RequestController {
     private final RequestService requestService;
     private final RequestRepository requestRepository;
-    @GetMapping("/users/{userId}/requests")
-    public RequestsDto getRequests(@PathVariable UUID userId,
-                                   @RequestJwtSubject UUID subject,
-                                   @RequestParam(defaultValue = "2") int pageSize,
-                                   @RequestParam(defaultValue = "0") int page){
-        List<RequestDto> requests = requestRepository.findByUserId(userId, PageRequest.of(page, pageSize)).stream()
-                .map(RequestMapper::toRequestDto)
-                .toList();
-
-        return new RequestsDto(requests);
-    }
+    private final UserRepository userRepository;
 
     @PostMapping("/users/{userId}/requests")
-    public RequestDto addRequest(@PathVariable UUID userId,
+    public PostRequestDto addRequest(@PathVariable UUID userId,
                                  @RequestJwtSubject UUID subject,
-                                 @RequestBody RequestDto requestDto)
+                                 @RequestBody PostRequestDto requestDto)
     {
-        return RequestMapper.toRequestDto(requestService.createRequest(requestDto, subject));
+        return RequestMapper.toPostRequestDto(requestService.createRequest(requestDto, subject));
+    }
+
+    @DeleteMapping("/users/{userId}/requests/{requestId}")
+    public void deleteRequest(@PathVariable UUID userId,
+                              @PathVariable Long requestId,
+                              @RequestJwtSubject UUID subject){
+        requestService.deleteRequest(requestId, subject);
     }
 
     @PutMapping("/users/{userId}/requests/{requestId}")
@@ -60,37 +65,46 @@ public class RequestController {
         return new RequestLanguagesStatsDto(requestLanguageStatsDtos);
     }
 
-    @GetMapping("/requests/{fileName}/upload-uri")
-    public RequestUriDto getUploadUri(@PathVariable String fileName,
-                                      @RequestJwtSubject UUID subject){
-        return RequestUriDto.builder()
-                .url(requestService.getUploadUri(subject, fileName))
-                .fileName(fileName)
-                .build();
+    @GetMapping("/requests/{requestId}")
+    public RequestDto getRequest(@RequestJwtSubject UUID subject,
+                                 @PathVariable Long requestId){
+        return RequestMapper.toRequestDto(requestRepository.findById(requestId).orElseThrow(NotFoundException::new));
     }
-    @GetMapping("/requests/{fileName}/download-uri")
-    public RequestUriDto getDownloadUri(@PathVariable String fileName,
+    @GetMapping("/storage/upload-uri")
+    public RequestUriDto getUploadUri(@RequestParam String fileName,
                                       @RequestJwtSubject UUID subject){
+        String path = String.format("%s/%s_%s", subject, UUID.randomUUID(), fileName);
         return RequestUriDto.builder()
-                .url(requestService.getDownloadUri(subject, fileName))
-                .fileName(fileName)
+                .url(requestService.getUploadUri(path))
+                .fileName(path)
                 .build();
     }
 
     @GetMapping("/public/requests")
-    public RequestsDto getFilteredRequests(@RequestParam(required = false) Double gtPrice,
-                                           @RequestParam(required = false) Double ltPrice,
+    public RequestsDto getFilteredRequests(@RequestParam(required = false) Double min,
+                                           @RequestParam(required = false) Double max,
                                            @RequestParam(required = false) List<Language> sourceLanguages,
                                            @RequestParam(required = false) List<Language> translatedLanguages,
-                                           @RequestParam(required = false) UUID userId){
+                                           @RequestParam(required = false) UUID userId,
+                                           @RequestParam(required = false) List<Status> status,
+                                           @RequestParam(required = false) Long dueDate,
+                                           @RequestParam(defaultValue = "modifiedAt") String sortingVariable,
+                                           @RequestParam(defaultValue = "DESC") String sortOrder,
+                                           @RequestParam(defaultValue = "10") int pageSize,
+                                           @RequestParam(defaultValue = "0") int page){
         FilterDto filter = FilterDto.builder()
-                .priceGt(gtPrice)
-                .priceLt(ltPrice)
+                .priceGt(min)
+                .priceLt(max)
                 .sourceLanguages(sourceLanguages)
                 .translatedLanguages(translatedLanguages)
                 .userId(userId)
+                .statuses(status)
+                .dueDate(dueDate != null ? Instant.ofEpochMilli(dueDate) : null)
                 .build();
-        return new RequestsDto(requestRepository.findAll(RequestSpecification.createFilter(filter)).stream()
+        return new RequestsDto(requestRepository.findAll(RequestSpecification.createFilter(filter),
+                                                 PageRequest.of(page, pageSize,
+                                                         Sort.by(Sort.Direction.fromString(sortOrder), sortingVariable)))
+                .stream()
                 .map(RequestMapper::toRequestDto).toList());
     }
 }
