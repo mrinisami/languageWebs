@@ -49,7 +49,7 @@ public class RequestService {
         return requestRepository.save(request);
     }
     public RequestUriDto getUploadUri(UUID subject, String fileName) {
-        String path = String.format("%s/%s_%s", subject, UUID.randomUUID(), fileName);
+        String path = String.format("/requests/%s/%s_%s", subject, UUID.randomUUID(), fileName);
         String url = storage.getUploadPresignedUrl(path);
         return RequestUriDto.builder()
                 .url(url)

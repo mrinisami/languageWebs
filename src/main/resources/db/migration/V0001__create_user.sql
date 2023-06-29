@@ -44,3 +44,16 @@ CREATE TABLE request(
     due_date timestamp(6),
     price float(53)
 )
+
+--contract
+
+CREATE TABLE contract(
+    id BIGSERIAL PRIMARY KEY,
+    status varchar(10) NOT NULL,
+    contracted_user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    file_path varchar(100),
+    created_at timestamp(6),
+    modified_at timestamp(6),
+    completed_at timestamp(6),
+    request_id uuid NOT NULL REFERENCES request(id) ON DELETE CASCADE
+)
