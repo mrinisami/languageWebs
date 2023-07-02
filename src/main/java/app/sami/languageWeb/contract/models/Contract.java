@@ -37,7 +37,7 @@ public class Contract {
     private Instant modifiedAt;
     @CreatedDate
     private Instant createdAt;
-    @CreatedDate
+
     private Instant completedAt;
 
     private String filePath;

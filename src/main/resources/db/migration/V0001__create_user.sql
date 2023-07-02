@@ -43,7 +43,7 @@ CREATE TABLE request(
     description varchar(4000),
     due_date timestamp(6),
     price float(53)
-)
+);
 
 --contract
 
@@ -55,5 +55,5 @@ CREATE TABLE contract(
     created_at timestamp(6),
     modified_at timestamp(6),
     completed_at timestamp(6),
-    request_id uuid NOT NULL REFERENCES request(id) ON DELETE CASCADE
-)
+    request_id BIGSERIAL NOT NULL REFERENCES request(id) ON DELETE CASCADE
+);
