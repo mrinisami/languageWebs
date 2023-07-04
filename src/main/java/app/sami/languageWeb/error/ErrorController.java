@@ -1,9 +1,6 @@
 package app.sami.languageWeb.error;
 
-import app.sami.languageWeb.error.exceptions.LanguageNotRegisteredException;
-import app.sami.languageWeb.error.exceptions.MinioPutUriException;
-import app.sami.languageWeb.error.exceptions.NotFoundException;
-import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
+import app.sami.languageWeb.error.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -21,7 +18,7 @@ public class ErrorController {
     @ResponseStatus(value = HttpStatus.FORBIDDEN)
     public Error.Response unauthorized(Exception ex) {return new Error.Response(ex.getMessage());}
 
-    @ExceptionHandler({MinioPutUriException.class})
+    @ExceptionHandler({MinioPutUriException.class, ContractTranslatedFileAbsent.class})
     @ResponseStatus(value= HttpStatus.BAD_REQUEST)
     public Error.Response storageProblem(Exception ex){return new Error.Response(ex.getMessage());}
 }

@@ -1,6 +1,6 @@
-package app.sami.languageWeb.request.models;
+package app.sami.languageWeb.contractRequest.models;
 
-import app.sami.languageWeb.language.models.Language;
+import app.sami.languageWeb.request.models.Request;
 import app.sami.languageWeb.user.models.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,38 +16,36 @@ import java.util.UUID;
 @Builder
 @With
 @Table
-@Entity(name = "request")
+@Entity(name = "contract_request")
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Request {
+public class ContractRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Enumerated(EnumType.STRING)
-    private Status status;
-    @Enumerated(EnumType.STRING)
-    private Language sourceLanguage;
-    @Enumerated(EnumType.STRING)
-    private Language translatedLanguage;
+    private ContractRequestStatus status;
+
+    @CreatedDate
+    private Instant createdAt;
+
+    @LastModifiedDate
+    private Instant modifiedAt;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
     private User user;
     @Column(name = "user_id")
     private UUID userId;
-    private Double price;
-    @CreatedDate
-    private Instant createdAt;
-    @LastModifiedDate
-    private Instant modifiedAt;
-    private Double estimatedTime;
-    private Integer nbWords;
-    private String description;
-    private String filePath;
-    private String name;
-    private Instant dueDate;
 
-    public boolean isUser(UUID subject){
-        return this.userId.equals(subject);
+    @OneToOne
+    @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
+    private Request request;
+    @Column(name = "request_id")
+    private Long requestId;
+
+    public boolean isRequestor(UUID subject){
+        return this.request.isUser(subject);
     }
 }

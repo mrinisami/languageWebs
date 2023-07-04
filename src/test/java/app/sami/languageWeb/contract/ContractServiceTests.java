@@ -3,6 +3,7 @@ package app.sami.languageWeb.contract;
 import app.sami.languageWeb.contract.dtos.StorageUriDto;
 import app.sami.languageWeb.contract.models.Contract;
 import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.error.exceptions.ContractTranslatedFileAbsent;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.request.RequestRepository;
 import app.sami.languageWeb.request.models.Request;
@@ -44,13 +45,15 @@ public class ContractServiceTests extends IntegrationTests {
     Contract contractTest;
     @BeforeEach
     void setup(){
+        userRepository.deleteAll();
         userTest = userRepository.save(UserFactory.userGenerator());
         userTest2 = userRepository.save(UserFactory.userGenerator());
         requestTest = requestRepository.save(RequestFactory.generateRequest().withUserId(userTest.getId()));
         contractTest = contractRepository.save(Contract.builder()
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
-                .filePath("test")
+                        .contractedStatus(Status.PENDING)
+                        .contractorStatus(Status.PENDING)
                 .status(Status.PENDING)
                 .build());
 
@@ -68,12 +71,10 @@ public class ContractServiceTests extends IntegrationTests {
 
     @Test
     void matchingCreateContact_ReturnsTrue(){
-        String path = "translated";
-        Contract result = contractService.createContract(userTest2.getId(), requestTest.getId(), path).withCreatedAt(null)
+        Contract result = contractService.createContract(userTest2.getId(), requestTest.getId()).withCreatedAt(null)
                 .withModifiedAt(null);
         Contract expected = Contract.builder()
                         .contractedUserId(userTest2.getId())
-                                .filePath(path)
                         .status(Status.PENDING)
                                         .requestId(requestTest.getId())
                 .id(result.getId())
@@ -84,19 +85,8 @@ public class ContractServiceTests extends IntegrationTests {
 
     @Test
     void givenSameUserRequestAndContractCreateContact_ThrowsUserNotAllowed(){
-        String path = "translated";
-        Contract result = contractService.createContract(userTest2.getId(), requestTest.getId(), path).withCreatedAt(null)
-                .withModifiedAt(null);
-        Contract expected = Contract.builder()
-                .contractedUserId(userTest2.getId())
-                .filePath(path)
-                .status(Status.PENDING)
-                .requestId(requestTest.getId())
-                .id(result.getId())
-                .build();
-
-        assertThrows(UserNotAllowedException.class, () -> contractService.createContract(userTest.getId(), requestTest.getId(),
-                path));
+        assertThrows(UserNotAllowedException.class, () -> contractService.createContract(userTest.getId(), requestTest.getId()
+                ));
     }
 
     @Test
@@ -120,5 +110,28 @@ public class ContractServiceTests extends IntegrationTests {
     void givenSameUserForRequestAndContractPushBack_ThrowsUnauthorizedUser(){
         assertThrows(UserNotAllowedException.class, () -> contractService.pushBackDueDate(contractTest.getId(),
                 userTest2.getId(), Instant.now()));
+    }
+
+    @Test
+    void matchingStatusUpdateStatus_ReturnsTrue(){
+        Status expected = Status.CANCELLED;
+        Status result = contractService.updateContractParticipantStatus(userTest2.getId(),
+                contractTest.getId(), Status.CANCELLED).getContractedStatus();
+
+        assertThat(expected).isEqualTo(result);
+    }
+    @Test
+    void updateStatusLeadsToCancellation_ReturnsTrue(){
+        Contract contract = contractRepository.save(contractTest.withContractedStatus(Status.CANCELLED));
+        Status result = contractService.updateContractParticipantStatus(userTest.getId(),
+                contract.getId(), Status.CANCELLED).getStatus();
+
+        assertThat(result).isEqualTo(Status.CANCELLED);
+    }
+    @Test
+    void updateStatusCompletedWithoutFile_ThrowsContractFileAbsentException(){
+        assertThrows(ContractTranslatedFileAbsent.class, () ->
+                contractService.updateContractParticipantStatus(userTest2.getId(),
+                        contractTest.getId(), Status.COMPLETED));
     }
 }

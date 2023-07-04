@@ -3,6 +3,7 @@ package app.sami.languageWeb.contract;
 import app.sami.languageWeb.contract.dtos.StorageUriDto;
 import app.sami.languageWeb.contract.models.Contract;
 import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.error.exceptions.ContractTranslatedFileAbsent;
 import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.request.RequestRepository;
@@ -34,23 +35,40 @@ public class ContractService {
                 .build();
     }
 
-    public Contract createContract(UUID subject, Long requestId, String path){
+    public Contract createContract(UUID subject, Long requestId){
         Request request = requestRepository.findById(requestId).orElseThrow(NotFoundException::new);
-        if (request.getUserId().equals(subject)){
+        if (request.isUser(subject)){
             throw new UserNotAllowedException();
         }
         requestRepository.save(request.withStatus(app.sami.languageWeb.request.models.Status.ACCEPTED));
         return contractRepository.save(Contract.builder()
                 .contractedUserId(subject)
-                .filePath(path)
                 .status(Status.PENDING)
                 .requestId(requestId)
                 .build());
     }
 
+    public Contract updateContractParticipantStatus(UUID subject, Long contractId, Status status){
+        Contract contract = contractRepository.findById(contractId).orElseThrow(NotFoundException::new);
+        if (status.equals(Status.COMPLETED) && !contract.isFileAdded()){
+            throw new ContractTranslatedFileAbsent();
+        }
+
+        contract = contractRepository.save(contract.updateStatus(subject, status));
+
+        if (contract.isContractedStatus(Status.CANCELLED) && contract.isContractorStatus(Status.CANCELLED)){
+            return cancelContract(contractId);
+        }
+        return contract;
+    }
+    private Contract cancelContract(Long contractId){
+        Contract contract = contractRepository.findById(contractId).orElseThrow(NotFoundException::new);
+        //TODO enforce cancelling fees
+        return contractRepository.save(contract.withStatus(Status.CANCELLED));
+    }
     public Contract changeContractFile(UUID subject, Long contractId, String path){
         Contract contract = contractRepository.findById(contractId).orElseThrow(NotFoundException::new);
-        if (subject.equals(contract.getRequest().getUserId())){
+        if (contract.isContractor(subject)){
             throw new UserNotAllowedException();
         }
         return contractRepository.save(contract.withFilePath(path));
@@ -58,7 +76,7 @@ public class ContractService {
 
     public Contract pushBackDueDate(Long contractId, UUID subject, Instant dueDate){
         Contract contract = contractRepository.findById(contractId).orElseThrow(NotFoundException::new);
-        if (!subject.equals(contract.getRequest().getUserId())){
+        if (!contract.isContractor(subject)){
             throw new UserNotAllowedException();
         }
         requestRepository.save(contract.getRequest().withDueDate(dueDate));

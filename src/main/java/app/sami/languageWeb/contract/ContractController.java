@@ -1,9 +1,6 @@
 package app.sami.languageWeb.contract;
 
-import app.sami.languageWeb.contract.dtos.ContractDto;
-import app.sami.languageWeb.contract.dtos.ContractFilterDto;
-import app.sami.languageWeb.contract.dtos.ContractsDto;
-import app.sami.languageWeb.contract.dtos.StorageUriDto;
+import app.sami.languageWeb.contract.dtos.*;
 import app.sami.languageWeb.contract.models.Contract;
 import app.sami.languageWeb.contract.models.Status;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
@@ -24,14 +21,7 @@ public class ContractController {
     private final ContractRepository contractRepository;
     private final ContractService contractService;
 
-    @PostMapping("/requests/{requestId}/contract")
-    public ContractDto createContract(@PathVariable Long requestId,
-                                      @RequestBody String path,
-                                      @RequestJwtSubject UUID subject){
-        return ContractMapper.toContractDto(contractService.createContract(subject, requestId, path));
-    }
-
-    @GetMapping("/contracts/storage/upload-uri")
+    @PostMapping("/contracts/storage/upload-uri")
     public StorageUriDto getUploadUri(@RequestJwtSubject UUID subject,
                                       @RequestBody String fileName){
         return contractService.getUploadUri(subject, fileName);
@@ -71,5 +61,12 @@ public class ContractController {
         return new ContractsDto(contractRepository.findAll(ContractSpecification.createFilter(filter),
                 PageRequest.of(page, pageSize, Sort.by(Sort.Direction.fromString(sortOrder), sortCriteria)))
                 .stream().map(ContractMapper::toContractDto).toList());
+    }
+    @PutMapping("/contracts/{contractId}/status")
+    public ContractDto updateStatus(@PathVariable Long contractId,
+                                    @RequestJwtSubject UUID subject,
+                                    @RequestBody ContractStatusDto status){
+        return ContractMapper.toContractDto(
+                contractService.updateContractParticipantStatus(subject, contractId, status.getStatus()));
     }
 }

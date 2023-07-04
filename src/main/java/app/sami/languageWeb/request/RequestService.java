@@ -37,7 +37,7 @@ public class RequestService {
     @Transactional
     public void deleteRequest(Long requestId, UUID subject){
         Request request = requestRepository.findById(requestId).orElseThrow(NotFoundException::new);
-        if (!request.getUserId().equals(subject)){
+        if (!request.isUser(subject)){
             throw new UserNotAllowedException();
         }
         requestRepository.delete(request);
