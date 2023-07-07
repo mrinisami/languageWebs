@@ -2,11 +2,10 @@ package app.sami.languageWeb.contractRequest;
 
 import app.sami.languageWeb.contract.ContractRepository;
 import app.sami.languageWeb.contract.models.Contract;
-import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.contract.models.ContractStatus;
 import app.sami.languageWeb.contractRequest.dtos.StatusDto;
 import app.sami.languageWeb.contractRequest.models.ContractRequest;
 import app.sami.languageWeb.contractRequest.models.ContractRequestStatus;
-import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.request.RequestRepository;
 import app.sami.languageWeb.request.models.Request;
 import app.sami.languageWeb.storage.Storage;
@@ -52,7 +51,7 @@ public class ContractRequestControllerTests extends IntegrationTests {
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
                 .filePath("test")
-                .status(Status.PENDING)
+                .contractStatus(ContractStatus.PENDING)
                 .build());
         contractRequest = contractRequestRepository.save(ContractRequest.builder()
                 .userId(userTest2.getId())

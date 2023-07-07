@@ -7,18 +7,14 @@ import app.sami.languageWeb.request.mapper.RequestMapper;
 import app.sami.languageWeb.request.models.Request;
 import app.sami.languageWeb.request.models.Status;
 import app.sami.languageWeb.storage.Storage;
-import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Filter;
 
 @Service
 @AllArgsConstructor
@@ -37,7 +33,7 @@ public class RequestService {
     @Transactional
     public void deleteRequest(Long requestId, UUID subject){
         Request request = requestRepository.findById(requestId).orElseThrow(NotFoundException::new);
-        if (!request.isUser(subject)){
+        if (!request.isRequester(subject)){
             throw new UserNotAllowedException();
         }
         requestRepository.delete(request);

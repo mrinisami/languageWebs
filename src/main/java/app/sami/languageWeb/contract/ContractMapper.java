@@ -16,4 +16,5 @@ public class ContractMapper {
                 .filePath(contract.getFilePath())
                 .build();
     }
+
 }

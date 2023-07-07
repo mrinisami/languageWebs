@@ -1,7 +1,7 @@
 package app.sami.languageWeb.contract.models;
 
-public enum Status {
+public enum ContractStatus {
     PENDING,
-    COMPLETED,
-    CANCELLED
+    COMPLETED
+
 }

@@ -47,7 +47,12 @@ public class Request {
     private String name;
     private Instant dueDate;
 
-    public boolean isUser(UUID subject){
+    public boolean isRequester(UUID subject){
         return this.userId.equals(subject);
+    }
+    public void updateDueDate(UUID subject, Instant date){
+        if (isRequester(subject)){
+            this.dueDate = date;
+        }
     }
 }

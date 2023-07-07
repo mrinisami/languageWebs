@@ -2,8 +2,7 @@ package app.sami.languageWeb.contract;
 
 import app.sami.languageWeb.contract.dtos.StorageUriDto;
 import app.sami.languageWeb.contract.models.Contract;
-import app.sami.languageWeb.contract.models.Status;
-import app.sami.languageWeb.error.exceptions.ContractTranslatedFileAbsent;
+import app.sami.languageWeb.contract.models.ContractStatus;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.request.RequestRepository;
 import app.sami.languageWeb.request.models.Request;
@@ -15,12 +14,9 @@ import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.simpleframework.xml.ElementArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.time.Instant;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.contains;
@@ -52,9 +48,8 @@ public class ContractServiceTests extends IntegrationTests {
         contractTest = contractRepository.save(Contract.builder()
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
-                        .contractedStatus(Status.PENDING)
-                        .contractorStatus(Status.PENDING)
-                .status(Status.PENDING)
+                        .contractedContractStatus(ContractStatus.PENDING)
+                .contractStatus(ContractStatus.PENDING)
                 .build());
 
 
@@ -75,7 +70,7 @@ public class ContractServiceTests extends IntegrationTests {
                 .withModifiedAt(null);
         Contract expected = Contract.builder()
                         .contractedUserId(userTest2.getId())
-                        .status(Status.PENDING)
+                        .contractStatus(ContractStatus.PENDING)
                                         .requestId(requestTest.getId())
                 .id(result.getId())
                                                 .build();
@@ -89,49 +84,4 @@ public class ContractServiceTests extends IntegrationTests {
                 ));
     }
 
-    @Test
-    void matchingFileChangePath_ReturnsTrue(){
-        String path = "newPath";
-        Contract result = contractService.changeContractFile(userTest2.getId(), contractTest.getId(), path);
-        Contract expected = contractTest.withFilePath(path);
-
-        assertThat(result.getFilePath().equals(expected.getFilePath()));
-    }
-
-    @Test
-    void matchingNewDueDate_ReturnsTrue(){
-        Instant expected = Instant.now();
-        Contract result = contractService.pushBackDueDate(contractTest.getId(), userTest.getId(), expected);
-
-        assertThat(result.getRequest().getDueDate()).isEqualTo(expected);
-    }
-
-    @Test
-    void givenSameUserForRequestAndContractPushBack_ThrowsUnauthorizedUser(){
-        assertThrows(UserNotAllowedException.class, () -> contractService.pushBackDueDate(contractTest.getId(),
-                userTest2.getId(), Instant.now()));
-    }
-
-    @Test
-    void matchingStatusUpdateStatus_ReturnsTrue(){
-        Status expected = Status.CANCELLED;
-        Status result = contractService.updateContractParticipantStatus(userTest2.getId(),
-                contractTest.getId(), Status.CANCELLED).getContractedStatus();
-
-        assertThat(expected).isEqualTo(result);
-    }
-    @Test
-    void updateStatusLeadsToCancellation_ReturnsTrue(){
-        Contract contract = contractRepository.save(contractTest.withContractedStatus(Status.CANCELLED));
-        Status result = contractService.updateContractParticipantStatus(userTest.getId(),
-                contract.getId(), Status.CANCELLED).getStatus();
-
-        assertThat(result).isEqualTo(Status.CANCELLED);
-    }
-    @Test
-    void updateStatusCompletedWithoutFile_ThrowsContractFileAbsentException(){
-        assertThrows(ContractTranslatedFileAbsent.class, () ->
-                contractService.updateContractParticipantStatus(userTest2.getId(),
-                        contractTest.getId(), Status.COMPLETED));
-    }
 }

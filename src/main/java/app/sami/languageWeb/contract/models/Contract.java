@@ -25,11 +25,11 @@ public class Contract {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column(name = "status")
+    private ContractStatus contractStatus;
     @Enumerated(EnumType.STRING)
-    private Status contractedStatus;
-    @Enumerated(EnumType.STRING)
-    private Status contractorStatus;
+    @Column(name = "contracted_status")
+    private ContractStatus contractedContractStatus;
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
     private User contractedUser;
@@ -51,26 +51,20 @@ public class Contract {
     @Column(name = "request_id")
     private Long requestId;
 
-    public Contract updateStatus(UUID subject, Status status){
-        if (subject.equals(contractedUserId)){
-            this.contractedStatus = status;
-            return this;
+    public Contract updateStatus(UUID subject, ContractStatus contractStatus){
+        if (subject.equals(contractedUserId)) {
+            this.contractedContractStatus = contractStatus;
         }
-        this.contractorStatus = status;
         return this;
     }
 
     public boolean isContractor(UUID subject){
-        return this.request.isUser(subject);
+        return this.request.isRequester(subject);
     }
 
-    public boolean isContractorStatus(Status status){
-        return this.contractorStatus.equals(status);
+    public boolean isContractedStatus(ContractStatus contractStatus){
+        return this.contractedContractStatus.equals(contractStatus);
     }
-
-    public boolean isContractedStatus(Status status){
-        return this.contractedStatus.equals(status);
-    }
-    public boolean isStatus(Status status) { return this.status.equals(status);}
+    public boolean isStatus(ContractStatus contractStatus) { return this.contractStatus.equals(contractStatus);}
     public boolean isFileAdded() {return !(this.filePath == null);}
 }

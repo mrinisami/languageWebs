@@ -1,6 +1,6 @@
 package app.sami.languageWeb.contract.dtos;
 
-import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.contract.models.ContractStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class ContractFilterDto {
-    private List<Status> statuses;
+    private List<ContractStatus> contractStatuses;
     private UUID contractedUserId;
     private UUID requestUserId;
 }

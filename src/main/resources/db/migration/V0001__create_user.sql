@@ -51,7 +51,6 @@ CREATE TABLE contract(
     id BIGSERIAL PRIMARY KEY,
     status varchar(10) NOT NULL,
     contracted_status varchar(10),
-    contractor_status varchar(10),
     contracted_user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     file_path varchar(100),
     created_at timestamp(6),
@@ -68,3 +67,13 @@ CREATE TABLE contract_request(
     created_at timestamp(6),
     modified_at timestamp(6)
 );
+
+CREATE TABLE extension_request(
+    id BIGSERIAL PRIMARY KEY,
+    created_at timestamp(6),
+    modified_at timestamp(6),
+    proposed_date timestamp(6) NOT NULL,
+    status varchar(10) NOT NULL,
+    user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    contract_id BIGSERIAL NOT NULL REFERENCES contract(id) ON DELETE CASCADE
+)

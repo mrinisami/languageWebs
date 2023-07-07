@@ -1,6 +1,6 @@
 package app.sami.languageWeb.contract.dtos;
 
-import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.contract.models.ContractStatus;
 import lombok.*;
 
 @Data
@@ -9,5 +9,5 @@ import lombok.*;
 @With
 @NoArgsConstructor
 public class ContractStatusDto {
-    private Status status;
+    private ContractStatus contractStatus;
 }

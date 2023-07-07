@@ -4,19 +4,19 @@ import { Status } from "./Filter";
 import { useSearchParams } from "react-router-dom";
 
 interface Props {
-  updateStatus: (status: Status) => void;
-  deleteStatus: (status: Status) => void;
+  updateStatus: (contractStatus: Status) => void;
+  deleteStatus: (contractStatus: Status) => void;
 }
 
 export default (props: Props) => {
-  const statuses = ["OPEN", "ACCEPTED", "PENDING", "CLOSED"];
+  const contractStatuses = ["OPEN", "ACCEPTED", "PENDING", "CLOSED"];
   const [searchParams] = useSearchParams();
   const defaultChecks = () => {
-    const checks = [...Array(statuses.length).map(() => false)];
+    const checks = [...Array(contractStatuses.length).map(() => false)];
     const params = Object.fromEntries(searchParams);
-    if (Object.keys(params).includes("status")) {
-      const statusParams = searchParams.getAll("status");
-      statuses.map((s, i) => {
+    if (Object.keys(params).includes("contractStatus")) {
+      const statusParams = searchParams.getAll("contractStatus");
+      contractStatuses.map((s, i) => {
         if (statusParams.includes(s)) {
           checks[i] = true;
         }
@@ -25,14 +25,14 @@ export default (props: Props) => {
     return checks;
   };
   const [checked, setChecked] = useState<boolean[]>(defaultChecks());
-  const handleOnChange = (status: Status) => {
+  const handleOnChange = (contractStatus: Status) => {
     const newChecks = [...checked];
-    newChecks[status.index] = !newChecks[status.index];
+    newChecks[contractStatus.index] = !newChecks[contractStatus.index];
     setChecked(newChecks);
-    if (newChecks[status.index]) {
-      props.updateStatus(status);
+    if (newChecks[contractStatus.index]) {
+      props.updateStatus(contractStatus);
     } else {
-      props.deleteStatus(status);
+      props.deleteStatus(contractStatus);
     }
   };
   return (
@@ -42,11 +42,11 @@ export default (props: Props) => {
           Status
         </Typography>
       </Grid>
-      {statuses.map((status, i) => (
+      {contractStatuses.map((contractStatus, i) => (
         <Grid item key={i}>
           <FormControlLabel
-            control={<Checkbox checked={checked[i]} onChange={() => handleOnChange({ status, index: i })} />}
-            label={status}
+            control={<Checkbox checked={checked[i]} onChange={() => handleOnChange({ contractStatus, index: i })} />}
+            label={contractStatus}
           />
         </Grid>
       ))}

@@ -1,6 +1,6 @@
-import { Button, Card, CardContent, Dialog, Grid, IconButton, Typography } from "@mui/material";
+import { Card, CardContent, Dialog, Grid, IconButton, Typography } from "@mui/material";
 import useAxios from "axios-hooks";
-import React, { ChangeEvent, ChangeEventHandler, useState } from "react";
+import React, { useState } from "react";
 import { request as api } from "../api/routes";
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Request, Requests } from "../api/review";
@@ -39,7 +39,6 @@ export default () => {
     },
     { manual: true }
   );
-  const navigate = useNavigate();
   const userId = useParams().userId;
   const params =
     userId === undefined ? Object.fromEntries(searchParams) : { ...Object.fromEntries(searchParams), userId };

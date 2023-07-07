@@ -1,7 +1,7 @@
 package app.sami.languageWeb.contract.dtos;
 
+import app.sami.languageWeb.contract.models.ContractStatus;
 import app.sami.languageWeb.request.dtos.RequestDto;
-import app.sami.languageWeb.request.models.Request;
 import lombok.*;
 
 import java.time.Instant;
@@ -19,4 +19,8 @@ public class ContractDto {
     private String filePath;
     private Instant createdAt;
     private Instant modifiedAt;
+    private ContractStatus contractedContractStatus;
+    private ContractStatus contractorContractStatus;
+    private Long dueDate;
+
 }

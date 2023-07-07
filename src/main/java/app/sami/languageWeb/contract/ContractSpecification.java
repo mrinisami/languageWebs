@@ -2,7 +2,7 @@ package app.sami.languageWeb.contract;
 
 import app.sami.languageWeb.contract.dtos.ContractFilterDto;
 import app.sami.languageWeb.contract.models.Contract;
-import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.contract.models.ContractStatus;
 import app.sami.languageWeb.request.models.Request;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,12 +14,12 @@ import java.util.UUID;
 public class ContractSpecification {
 
     public static Specification<Contract> createFilter(ContractFilterDto contractFilterDto){
-        return statuses(contractFilterDto.getStatuses())
+        return statuses(contractFilterDto.getContractStatuses())
                 .and(requestUserId(contractFilterDto.getRequestUserId()))
                 .and(contractedUserId(contractFilterDto.getContractedUserId()));
     }
-    static Specification<Contract> statuses(List<Status> statuses){
-        return optSpec(statuses, (root, query, criteriaBuilder) -> root.get("status").in(statuses));
+    static Specification<Contract> statuses(List<ContractStatus> contractStatuses){
+        return optSpec(contractStatuses, (root, query, criteriaBuilder) -> root.get("status").in(contractStatuses));
     }
 
     static Specification<Contract> requestUserId(UUID userId){

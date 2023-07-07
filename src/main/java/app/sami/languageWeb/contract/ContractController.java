@@ -1,13 +1,11 @@
 package app.sami.languageWeb.contract;
 
 import app.sami.languageWeb.contract.dtos.*;
-import app.sami.languageWeb.contract.models.Contract;
-import app.sami.languageWeb.contract.models.Status;
+import app.sami.languageWeb.contract.models.ContractStatus;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -27,25 +25,16 @@ public class ContractController {
         return contractService.getUploadUri(subject, fileName);
     }
 
-    @PutMapping("/contracts/{contractId}/file")
-    public ContractDto addTranslatedDocument(@RequestJwtSubject UUID subject,
+    @PutMapping("/contracts/{contractId}")
+    public ContractDto editContract(@RequestJwtSubject UUID subject,
                                              @PathVariable Long contractId,
-                                             @RequestBody String path){
-        return ContractMapper.toContractDto(contractService.changeContractFile(subject, contractId, path));
-    }
-
-    @PutMapping("/contracts/{contractId}/extension")
-    public ContractDto giveExtension(@RequestJwtSubject UUID subject,
-                                     @PathVariable Long contractId,
-                                     @RequestBody Long dueDate)
-    {
-        return ContractMapper.toContractDto(contractService.pushBackDueDate(contractId,
-                subject,
-                Instant.ofEpochMilli(dueDate)));
+                                             @RequestBody ContractDto contractDto){
+        return ContractMapper.toContractDto(contractService.editContract(subject, contractId,
+                contractDto));
     }
 
     @GetMapping("/contracts")
-    public ContractsDto getFilteredContracts(@RequestParam(required = false) List<Status> statuses,
+    public ContractsDto getFilteredContracts(@RequestParam(required = false) List<ContractStatus> contractStatuses,
                                              @RequestParam(required = false) UUID contractedUserId,
                                              @RequestParam(required = false) UUID requestUserId,
                                              @RequestParam(defaultValue = "0") int page,
@@ -55,18 +44,12 @@ public class ContractController {
         ContractFilterDto filter = ContractFilterDto.builder()
                 .contractedUserId(contractedUserId)
                 .requestUserId(requestUserId)
-                .statuses(statuses)
+                .contractStatuses(contractStatuses)
                 .build();
 
         return new ContractsDto(contractRepository.findAll(ContractSpecification.createFilter(filter),
                 PageRequest.of(page, pageSize, Sort.by(Sort.Direction.fromString(sortOrder), sortCriteria)))
                 .stream().map(ContractMapper::toContractDto).toList());
     }
-    @PutMapping("/contracts/{contractId}/status")
-    public ContractDto updateStatus(@PathVariable Long contractId,
-                                    @RequestJwtSubject UUID subject,
-                                    @RequestBody ContractStatusDto status){
-        return ContractMapper.toContractDto(
-                contractService.updateContractParticipantStatus(subject, contractId, status.getStatus()));
-    }
+
 }

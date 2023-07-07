@@ -2,14 +2,12 @@ package app.sami.languageWeb.contractRequest;
 
 import app.sami.languageWeb.contract.ContractRepository;
 import app.sami.languageWeb.contract.models.Contract;
-import app.sami.languageWeb.contract.models.Status;
 import app.sami.languageWeb.contractRequest.models.ContractRequest;
 import app.sami.languageWeb.contractRequest.models.ContractRequestStatus;
 import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import app.sami.languageWeb.request.RequestRepository;
 import app.sami.languageWeb.request.models.Request;
-import app.sami.languageWeb.storage.Storage;
 import app.sami.languageWeb.testUtils.IntegrationTests;
 import app.sami.languageWeb.testUtils.factories.RequestFactory;
 import app.sami.languageWeb.testUtils.factories.UserFactory;
@@ -18,8 +16,6 @@ import app.sami.languageWeb.user.repos.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;

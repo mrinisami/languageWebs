@@ -46,6 +46,6 @@ public class ContractRequest {
     private Long requestId;
 
     public boolean isRequestor(UUID subject){
-        return this.request.isUser(subject);
+        return this.request.isRequester(subject);
     }
 }
