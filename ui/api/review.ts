@@ -16,7 +16,7 @@ export interface Request {
   translatedLanguage: string;
   name: string;
   modifiedAt: string;
-  status: string;
+  contractStatus: string;
   avgTime: number;
   filePath: string;
   downloadUri: string;

@@ -24,12 +24,12 @@ interface SearchParams {
   min: number;
   sourceLanguages: string[];
   translatedLanguages: string[];
-  status: string[];
+  contractStatus: string[];
   dueDate: number;
 }
 export interface Status {
   index: number;
-  status: string;
+  contractStatus: string;
 }
 interface Props {
   languageStats: RequestLanguagesStats;
@@ -39,7 +39,7 @@ export default (props: Props) => {
   const [searchParams] = useSearchParams();
   const sourceLanguages = searchParams.getAll("sourceLanguages");
   const translatedLanguages = searchParams.getAll("translatedLanguages");
-  const [status, setStatus] = useState<Status[]>([]);
+  const [contractStatus, setStatus] = useState<Status[]>([]);
   const [dueDate, setDueDate] = useState<number | null>(null);
   const [chosenLanguages, setChosenLanguages] = useState<Language[]>(
     props.languageStats.requestLanguageStats
@@ -73,9 +73,9 @@ export default (props: Props) => {
     setPrices(prices.filter((price) => price.index !== index));
   };
   const updateNbLang = (nbLang: number) => setNbLangShown(nbLang);
-  const updateStatus = (statusParam: Status) => setStatus([...status, statusParam]);
+  const updateStatus = (statusParam: Status) => setStatus([...contractStatus, statusParam]);
   const deleteStatus = (statusParam: Status) =>
-    setStatus(status.filter((status) => status.index !== statusParam.index));
+    setStatus(contractStatus.filter((contractStatus) => contractStatus.index !== statusParam.index));
   const addDueDate = (date: DateInfo) => setDueDate(addDaysToTimestamp(date.days).getTime());
   const removeDueDate = () => setDueDate(null);
   const onClickApplyFilter = () => {
@@ -101,8 +101,8 @@ export default (props: Props) => {
       params.sourceLanguages = chosenLanguages.map((info) => info.sourceLanguage);
       params.translatedLanguages = chosenLanguages.map((info) => info.translatedLanguage);
     }
-    if (status.length > 0) {
-      params.status = status.map((s) => s.status);
+    if (contractStatus.length > 0) {
+      params.contractStatus = contractStatus.map((s) => s.contractStatus);
     }
     if (dueDate) {
       params.dueDate = dueDate;

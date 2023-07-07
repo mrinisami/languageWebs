@@ -46,4 +46,13 @@ public class Request {
     private String filePath;
     private String name;
     private Instant dueDate;
+
+    public boolean isRequester(UUID subject){
+        return this.userId.equals(subject);
+    }
+    public void updateDueDate(UUID subject, Instant date){
+        if (isRequester(subject)){
+            this.dueDate = date;
+        }
+    }
 }
