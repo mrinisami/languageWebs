@@ -19,16 +19,16 @@ public class ContractController {
     private final ContractRepository contractRepository;
     private final ContractService contractService;
 
-    @PostMapping("/contracts/storage/upload-uri")
+    @GetMapping("/contracts/storage/upload-uri")
     public StorageUriDto getUploadUri(@RequestJwtSubject UUID subject,
-                                      @RequestBody String fileName){
+                                      @RequestParam String fileName){
         return contractService.getUploadUri(subject, fileName);
     }
 
     @PutMapping("/contracts/{contractId}")
     public ContractDto editContract(@RequestJwtSubject UUID subject,
                                              @PathVariable Long contractId,
-                                             @RequestBody ContractDto contractDto){
+                                             @RequestBody EditContractRequest contractDto){
         return ContractMapper.toContractDto(contractService.editContract(subject, contractId,
                 contractDto));
     }

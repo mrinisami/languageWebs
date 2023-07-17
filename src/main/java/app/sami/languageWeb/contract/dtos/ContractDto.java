@@ -19,8 +19,6 @@ public class ContractDto {
     private String filePath;
     private Instant createdAt;
     private Instant modifiedAt;
-    private ContractStatus contractedContractStatus;
-    private ContractStatus contractorContractStatus;
+    private ContractStatus status;
     private Long dueDate;
-
 }

@@ -14,6 +14,7 @@ public class ContractMapper {
                 .createdAt(contract.getCreatedAt())
                 .modifiedAt(contract.getModifiedAt())
                 .filePath(contract.getFilePath())
+                .status(contract.getContractStatus())
                 .build();
     }
 

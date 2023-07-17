@@ -37,11 +37,6 @@ public abstract class IntegrationTests {
                 .header("authorization", "Bearer " + token);
     }
 
-    protected MockHttpServletRequestBuilder get(String url, String token, Object body) throws JsonProcessingException {
-        return MockMvcRequestBuilders.get(url)
-                .header("authorization", "Bearer " + token)
-                .content(objectMapper.writeValueAsBytes(body));
-    }
     protected MockHttpServletRequestBuilder post(String url){
         return MockMvcRequestBuilders.post(url).contentType(MediaType.APPLICATION_JSON);
     }

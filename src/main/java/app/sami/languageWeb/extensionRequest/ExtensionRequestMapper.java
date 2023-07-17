@@ -7,8 +7,10 @@ public class ExtensionRequestMapper {
 
     public static ExtensionRequestDto toExtensionRequestDto(ExtensionRequest extensionRequest){
         return ExtensionRequestDto.builder()
-                .date(extensionRequest.getProposedDate())
+                .date(extensionRequest.getProposedDate().toEpochMilli())
                 .contractId(extensionRequest.getContractId())
+                .status(extensionRequest.getStatus())
+                .id(extensionRequest.getId())
                 .build();
     }
 }

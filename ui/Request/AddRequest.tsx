@@ -52,8 +52,8 @@ export default () => {
     },
     { manual: true }
   );
-  const handlePost = (name: string, filePath: string) => {
-    setFileName(name);
+  const handlePost = (filePath: string) => {
+    setFileName(filePath);
     const requestDto = {
       name,
       filePath,
@@ -167,7 +167,7 @@ export default () => {
               </Accordion>
             </Grid>
             <Grid item xs={2}>
-              <UploadFile setFileInfo={handlePost} name={fileName} />
+              <UploadFile setFileInfo={handlePost} storageEndPoint={request.getUploadUri} />
             </Grid>
           </Grid>
         </Grid>

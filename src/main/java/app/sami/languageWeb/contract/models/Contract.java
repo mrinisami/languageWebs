@@ -27,9 +27,7 @@ public class Contract {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ContractStatus contractStatus;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "contracted_status")
-    private ContractStatus contractedContractStatus;
+
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
     private User contractedUser;
@@ -53,7 +51,7 @@ public class Contract {
 
     public Contract updateStatus(UUID subject, ContractStatus contractStatus){
         if (subject.equals(contractedUserId)) {
-            this.contractedContractStatus = contractStatus;
+            this.contractStatus = contractStatus;
         }
         return this;
     }
@@ -61,10 +59,7 @@ public class Contract {
     public boolean isContractor(UUID subject){
         return this.request.isRequester(subject);
     }
-
-    public boolean isContractedStatus(ContractStatus contractStatus){
-        return this.contractedContractStatus.equals(contractStatus);
-    }
+    public boolean isContracted(UUID subject) {return this.contractedUserId.equals(subject);}
     public boolean isStatus(ContractStatus contractStatus) { return this.contractStatus.equals(contractStatus);}
     public boolean isFileAdded() {return !(this.filePath == null);}
 }

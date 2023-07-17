@@ -40,6 +40,7 @@ public class LanguageControllerTests extends IntegrationTests {
     private final Double grade2 = 100.0;
     @BeforeEach
     void setup(){
+        userRepository.deleteAll();
         userTest1 = userRepository.save(UserFactory.userGenerator());
         userTest2 = userRepository.save(UserFactory.userGenerator());
         userTest3 = userRepository.save(UserFactory.userGenerator());
@@ -67,6 +68,16 @@ public class LanguageControllerTests extends IntegrationTests {
                 .withTranslatedLanguage(Language.BAMBARA));
     }
 
+    @Test
+    void getUserLanguageByRefLanguageAndTranslatedLanguage_Returns200() throws Exception{
+        String token = authUser(userTest1);
+        String url = String.format("/users/%s/languageGrades", userTest2.getId());
+
+        mockMvc.perform(get(url, token)
+                        .param("refLanguage", Language.MACEDONIAN.toString())
+                        .param("translatedLanguage", Language.AKAN.toString()))
+                .andExpect(status().isOk());
+    }
     @Test
     void getUserLanguages_ReturnsLanguageGradesListAnd200() throws Exception{
         UUID userId = userTest2.getId();

@@ -54,6 +54,11 @@ public class ExtensionRequest {
         this.status = status;
     }
 
+    public void updateDate(Long date){
+        if (status == ExtensionRequestStatus.ACCEPTED){
+            this.proposedDate = Instant.ofEpochMilli(date);
+        }
+    }
     public boolean isContractor(UUID subject){
         return this.contract.isContractor(subject);
     }

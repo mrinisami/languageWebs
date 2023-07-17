@@ -3,7 +3,6 @@ import { configure } from "axios-hooks";
 import { env } from "./env";
 
 export const configureAxiosHeaders = (token?: string) => {
-  console.log(token);
   let headers = {};
   if (token !== null) {
     headers = { Authorization: `Bearer ${token}` };

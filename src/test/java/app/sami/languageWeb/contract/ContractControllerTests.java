@@ -46,7 +46,6 @@ public class ContractControllerTests extends IntegrationTests {
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
                 .contractStatus(ContractStatus.PENDING)
-                        .contractedContractStatus(ContractStatus.PENDING)
                 .build());
     }
 

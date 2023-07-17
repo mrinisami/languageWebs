@@ -1,4 +1,5 @@
 DELETE from users;
+DELETE from request;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 INSERT INTO users(id, email, first_name, last_name, user_password, user_role, avatar_uri)
@@ -21,6 +22,9 @@ INSERT INTO language_grades(id, user_id, emitter_user_id, ref_language, translat
 VALUES(333333, '943050df-bb81-488d-9420-11ef7ebef3fa', '943050df-bb81-488d-9420-11ef7ebef3fa', 'ARABIC', 'FRENCH', 55);
 
 INSERT INTO language_grades(id, user_id, emitter_user_id, ref_language, translated_language, grade)
+VALUES(333339, '943050df-bb81-488d-9420-11ef7ebef3fa', '943050df-bb81-488d-9420-11ef7ebef3fa', 'ENGLISH', 'FRENCH', 75);
+
+INSERT INTO language_grades(id, user_id, emitter_user_id, ref_language, translated_language, grade)
 VALUES(3838383, '943050df-bb81-488d-9420-11ef7ebef3fa', '22a161e2-c34e-45af-be8c-27ac5d86b1b3', 'ARABIC', 'FRENCH', 89);
 
 INSERT INTO request(id, translated_language, source_language, status, user_id, price, file_path, due_date, name)
@@ -31,3 +35,15 @@ VALUES(2373,  'FRENCH', 'ENGLISH', 'PENDING', '943050df-bb81-488d-9420-11ef7ebef
 
 INSERT INTO request(id, translated_language, source_language, status, user_id, price, file_path, name)
 VALUES(23721, 'FRENCH', 'ENGLISH', 'PENDING', '22a161e2-c34e-45af-be8c-27ac5d86b1b3', 0.75, 'dev/pote.txt', 'pote');
+
+INSERT INTO contract_request(id, status, request_id, user_id)
+VALUES(133, 'PENDING', 2343, '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO contract_request(id, status, request_id, user_id)
+VALUES(244, 'PENDING', 2373, '22a161e2-c34e-45af-be8c-27ac5d86b1b3');
+
+INSERT INTO contract_request(id, status, request_id, user_id)
+VALUES(333, 'ACCEPTED', 23721, '943050df-bb81-488d-9420-11ef7ebef3fa');
+
+INSERT INTO contract(status, contracted_user_id, request_id)
+VALUES('PENDING', '943050df-bb81-488d-9420-11ef7ebef3fa', 23721);

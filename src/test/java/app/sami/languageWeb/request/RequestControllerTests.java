@@ -54,9 +54,11 @@ public class RequestControllerTests extends IntegrationTests {
         userTest = userRepository.save(UserFactory.userGenerator());
         userTest1 = userRepository.save(UserFactory.userGenerator());
         requestTest = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId())
-                .withUser(userTest));
+                .withUser(userTest)
+                );
         requestTest2 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
-        requestTest3 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
+        requestTest3 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId())
+                .withFilePath("test"));
     }
 
 
@@ -134,6 +136,15 @@ public class RequestControllerTests extends IntegrationTests {
 
     }
 
+    @Test
+    void getDownloadUri_Returns200() throws Exception{
+        String url = "/storage/download-uri";
+        String token = authUser(userTest);
+
+        mockMvc.perform(get(url, token)
+                .param("path", "test"))
+                .andExpect(status().isOk());
+    }
     @Test
     void validDeleteRequest_Returns200() throws Exception{
         String url = String.format("/users/%s/requests/%s", requestTest.getUserId(), requestTest.getId());

@@ -1,6 +1,7 @@
 package app.sami.languageWeb.contract;
 
 import app.sami.languageWeb.contract.dtos.ContractDto;
+import app.sami.languageWeb.contract.dtos.EditContractRequest;
 import app.sami.languageWeb.contract.dtos.StorageUriDto;
 import app.sami.languageWeb.contract.models.Contract;
 import app.sami.languageWeb.contract.models.ContractStatus;
@@ -46,9 +47,9 @@ public class ContractService {
                 .build());
     }
 
-    public Contract editContract(UUID subject, Long contractId, ContractDto contractDto){
+    public Contract editContract(UUID subject, Long contractId, EditContractRequest contractDto){
         Contract contract = contractRepository.findById(contractId).orElseThrow(NotFoundException::new);
-
+        contract.updateStatus(subject, contractDto.getStatus());
         return contractRepository.save(contract.withFilePath(contractDto.getFilePath()));
     }
 

@@ -1,17 +1,19 @@
-import { Button, Grid, Typography } from "@mui/material";
+import { Chip, Grid } from "@mui/material";
 import React, { useState } from "react";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import useAxios from "axios-hooks";
 import { request } from "../api/routes";
 import { UploadUri } from "../api/review";
+import CheckIcon from "@mui/icons-material/Check";
 
 interface Params {
   fileName: string;
 }
 
 interface Props {
-  setFileInfo: (name: string, filePath: string) => void;
-  name: string | undefined;}
+  setFileInfo: (filePath: string) => void;
+  storageEndPoint: string;
+}
 
 export default (props: Props) => {
   const [file, setFile] = useState<Blob | string>("");
@@ -19,7 +21,7 @@ export default (props: Props) => {
   const [, executePut] = useAxios({ method: "PUT", baseURL: "", headers: { Authorization: "" } }, { manual: true });
   const [, executeGet] = useAxios<UploadUri>(
     {
-      url: request.getUploadUri,
+      url: props.storageEndPoint,
       params: reqParam
     },
     { manual: true }
@@ -35,18 +37,31 @@ export default (props: Props) => {
         url: data.url,
         data: file
       });
-      props.setFileInfo(file.name, data.fileName);
+      props.setFileInfo(data.fileName);
     }
   };
   return (
-    <Grid item container rowSpacing={1}>
-      <Grid item xs={12}>
-        <input type="file" onChange={handleFileUpload} />
+    <Grid item container direction="column" alignItems="center">
+      <Grid item>
+        {file === "" ? (
+          <Grid item>
+            <Chip
+              label="Upload file"
+              icon={<FileUploadIcon />}
+              onClick={() => document.getElementById("upload")?.click()}
+            />
+          </Grid>
+        ) : (
+          <Grid item>
+            <Chip label={file.name} icon={<FileUploadIcon />} />
+          </Grid>
+        )}
       </Grid>
-      <Grid item xs={12}>
-        <Button endIcon={<FileUploadIcon />} onClick={onClickUpload}>
-          Submit
-        </Button>
+      <Grid item>
+        <input type="file" onChange={handleFileUpload} id="upload" hidden />
+      </Grid>
+      <Grid item>
+        <Chip label="Confirm" icon={<CheckIcon color="success" />} onClick={onClickUpload} />
       </Grid>
     </Grid>
   );

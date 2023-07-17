@@ -50,9 +50,8 @@ CREATE TABLE request(
 CREATE TABLE contract(
     id BIGSERIAL PRIMARY KEY,
     status varchar(10) NOT NULL,
-    contracted_status varchar(10),
     contracted_user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    file_path varchar(100),
+    file_path varchar(500),
     created_at timestamp(6),
     modified_at timestamp(6),
     completed_at timestamp(6),
