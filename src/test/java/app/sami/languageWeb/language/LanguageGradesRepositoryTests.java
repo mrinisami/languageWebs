@@ -62,6 +62,14 @@ public class LanguageGradesRepositoryTests {
     }
 
     @Test
+    void listNotEmptyGradeStatsByLanguage_ReturnsTrue(){
+        GradeStatsSummary gradeStatsSummaries = languageGradesRepository.findByRefLanguageAndTranslatedLanguageAndUserId(
+                userTest1.getId(), Language.ARABIC.toString(), Language.ENGLISH.toString()
+        ).orElseThrow(NotFoundException::new);
+
+
+    }
+    @Test
     void matchingGradesStatsListByUser_ReturnsTrue(){
         UUID userId = userTest1.getId();
 

@@ -61,6 +61,16 @@ public class ContractRequestControllerTests extends IntegrationTests {
     }
 
     @Test
+    void getContractRequestByUserId_Returns200() throws Exception{
+        String token = authUser(userTest2);
+        String url = String.format("/contract-request");
+
+        mockMvc.perform(get(url, token)
+                        .param("requestId", requestTest.getId().toString())
+                        .param("userId", userTest2.getId().toString()))
+                .andExpect(status().isOk());
+    }
+    @Test
     void createContractRequest_Returns200() throws Exception{
         String token = authUser(userTest2);
         String url = String.format("/requests/%s/contract-request", requestTest.getId());
@@ -87,5 +97,24 @@ public class ContractRequestControllerTests extends IntegrationTests {
         mockMvc.perform(put(url, new StatusDto(ContractRequestStatus.ACCEPTED), token))
                 .andExpect(status().isForbidden());
 
+    }
+
+    @Test
+    void getContractRequest_Returns200() throws Exception {
+        String token = authUser(userTest);
+        String url = String.format("/contract-requests");
+
+        mockMvc.perform(get(url, token)
+                        .param("requestId", requestTest.getId().toString()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenDifferentUserIdGetContractRequest_Returns404() throws Exception {
+        String token = authUser(userTest2);
+        String url = String.format("/requests/%s/contract-requests", requestTest.getId());
+
+        mockMvc.perform(get(url, token))
+                .andExpect(status().isForbidden());
     }
 }

@@ -1,11 +1,26 @@
-import { Container } from "@mui/system";
+import { Grid } from "@mui/material";
 import React from "react";
-import Request from "./Request";
+import Filter from "./Filter";
+import Results from "./Results";
+import { request } from "../api/routes";
+import useAxios from "axios-hooks";
+import { RequestLanguagesStats } from "../api/review";
 
 export default () => {
-  return (
-    <Container>
-      <Request />
-    </Container>
-  );
+  const [{ data }] = useAxios<RequestLanguagesStats>({
+    url: request.getLanguageStats
+  });
+  if (data) {
+    return (
+      <Grid container spacing={1}>
+        <Grid item xs={2}>
+          <Filter languageStats={data} />
+        </Grid>
+        <Grid item container xs>
+          <Results />
+        </Grid>
+      </Grid>
+    );
+  }
+  return <></>;
 };

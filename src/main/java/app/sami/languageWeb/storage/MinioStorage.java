@@ -10,6 +10,8 @@ import lombok.*;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
@@ -52,11 +54,14 @@ public class MinioStorage implements Storage{
     @Override
     public String getDownloadPresignedUrl(String name){
         try{
+            Map<String, String> reqParams = new HashMap<String, String>();
+            reqParams.put("response-content-disposition", "attachment");
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                     .bucket(bucketName)
                     .object(name)
                     .method(Method.GET)
                             .expiry(30, TimeUnit.MINUTES)
+                            .extraQueryParams(reqParams)
                     .build());
         }
         catch (Exception e){

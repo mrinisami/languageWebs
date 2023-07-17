@@ -1,21 +1,27 @@
 package app.sami.languageWeb.language;
 
+import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.language.dtos.*;
 import app.sami.languageWeb.language.models.Language;
 import app.sami.languageWeb.language.models.LanguageGrades;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
+import lombok.AllArgsConstructor;
+import org.simpleframework.xml.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
+@AllArgsConstructor
 public class LanguageGradesController {
 
     @Autowired
     private LanguageGradesService languageGradesService;
+    private final LanguageGradesRepository languageGradesRepository;
 
     @GetMapping("/public/users/{userId}/languages")
     public LanguagesGradesDto getUserLanguages(@PathVariable UUID userId){
@@ -50,6 +56,17 @@ public class LanguageGradesController {
                                                @PathVariable Long languageGradeId){
 
         return toLanguageGradesDto(languageGradesService.editUserLanguageGrade(languageGradeRequest, subject, languageGradeId));
+    }
+
+    @GetMapping("/users/{userId}/languageGrades")
+    public LanguageAllGradesDto getUserLanguageByLanguage(@RequestJwtSubject UUID subject,
+                                                       @PathVariable UUID userId,
+                                                       @RequestParam String refLanguage,
+                                                       @RequestParam String translatedLanguage){
+        GradeStatsSummary gradeStats = languageGradesRepository.findByRefLanguageAndTranslatedLanguageAndUserId(
+                userId, refLanguage, translatedLanguage
+        ).orElseThrow(NotFoundException::new);
+        return toLanguageAllGradesDto(gradeStats);
     }
 
     @GetMapping("/users/{userId}/languageGrades/{emitterUserId}")

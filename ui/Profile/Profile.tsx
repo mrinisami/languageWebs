@@ -2,26 +2,27 @@ import { Avatar, Grid, Paper, Tab, Tabs, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import { getFormattedNameFromApi } from "../utils/user";
-import { Navigate, createSearchParams, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import LanguageReviews from "./LanguageReviews";
 import useAxios from "axios-hooks";
 import { user } from "../api/routes";
 import { routes } from "../routes";
-import { localStorage } from "../utils/localstorage";
-import LanguageReviewPublic from "./LanguageReviewPublic";
-import Request from "../Request/Request";
+import Request from "../Request/RequestPage";
+import ContractPage from "../Contract/ContractPage";
 
 export default () => {
-  const [searchParams, setSearchParams] = useSearchParams();
   const userId: string | undefined = useParams() !== undefined ? useParams().userId : "";
   const navigate = useNavigate();
   if (useParams().tabValue === undefined) {
     navigate(routes.profile(userId, "recentActivity"));
   }
-  const [{ data, loading, error }] = useAxios({
-    url: user.getUserInfo(userId),
-    method: "GET"
-  });
+  const [{ data, loading, error }] = useAxios(
+    {
+      url: user.getUserInfo(userId),
+      method: "GET"
+    },
+    { useCache: false }
+  );
   const [tabValue, setTabValue] = useState<string | undefined>(useParams().tabValue);
   useEffect(() => {
     navigate(routes.profile(userId, tabValue));
@@ -50,8 +51,8 @@ export default () => {
                 <Tabs value={tabValue} onChange={(e: React.SyntheticEvent, value: string) => setTabValue(value)}>
                   <Tab label="Recent activity" value="recentActivity" />
                   <Tab label="Language reviews" value="languageReviews" />
-                  <Tab label="Following" value="following" />
                   <Tab label="Requests" value="requests" />
+                  <Tab label="Contracts" value="contracts" />
                 </Tabs>
               </Grid>
               <Grid item xs={12}>
@@ -68,11 +69,15 @@ export default () => {
       return <></>;
     }
     if (tabValue === "languageReviews") {
-      return localStorage.token.exists() ? <LanguageReviews /> : <LanguageReviewPublic />;
+      return <LanguageReviews />;
     }
     if (tabValue === "requests") {
       //setSearchParams({ userId });
       return <Request />;
     }
+    if (tabValue === "contracts") {
+      return <ContractPage />;
+    }
   }
+  return <></>;
 };

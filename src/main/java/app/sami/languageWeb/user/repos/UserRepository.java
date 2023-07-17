@@ -18,7 +18,7 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmail(String email);
 
-    @Query(value= "SELECT id, first_name, last_name, email, user_password, created_at, user_role " +
+    @Query(value= "SELECT id, avatar_uri, first_name, last_name, email, user_password, created_at, user_role " +
             "FROM users " +
             "WHERE LOWER(first_name) LIKE :name% " +
             "OR LOWER(last_name) LIKE :name%",

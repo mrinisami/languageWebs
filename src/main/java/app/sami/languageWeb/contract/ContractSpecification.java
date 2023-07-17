@@ -15,9 +15,9 @@ public class ContractSpecification {
 
     public static Specification<Contract> createFilter(ContractFilterDto contractFilterDto){
         return statuses(contractFilterDto.getContractStatuses())
-                .and(requestUserId(contractFilterDto.getRequestUserId()))
-                .and(contractedUserId(contractFilterDto.getContractedUserId()));
-    }
+                .and(requestUserId(contractFilterDto.getRequestUserId())
+                        .or(contractedUserId(contractFilterDto.getContractedUserId())));
+                    }
     static Specification<Contract> statuses(List<ContractStatus> contractStatuses){
         return optSpec(contractStatuses, (root, query, criteriaBuilder) -> root.get("status").in(contractStatuses));
     }

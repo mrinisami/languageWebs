@@ -11,7 +11,8 @@ import java.time.Instant;
 @With
 @NoArgsConstructor
 public class ExtensionRequestDto {
-    private Instant date;
+    private Long date;
     private Long contractId;
     private ExtensionRequestStatus status;
+    private Long id;
 }

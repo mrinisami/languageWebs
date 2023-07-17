@@ -9,6 +9,7 @@ import app.sami.languageWeb.request.models.Request;
 import app.sami.languageWeb.request.models.Status;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import app.sami.languageWeb.request.models.RequestSpecification;
+import app.sami.languageWeb.storage.Storage;
 import app.sami.languageWeb.user.models.User;
 import app.sami.languageWeb.user.repos.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class RequestController {
     private final RequestService requestService;
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
+    private final Storage storage;
 
     @PostMapping("/users/{userId}/requests")
     public PostRequestDto addRequest(@PathVariable UUID userId,
@@ -76,6 +78,14 @@ public class RequestController {
         return requestService.getUploadUri(subject, fileName);
     }
 
+    @GetMapping("/storage/download-uri")
+    public RequestUriDto getDownloadUri(@RequestJwtSubject UUID subject,
+                                        @RequestParam String path){
+        return RequestUriDto.builder()
+                .url(storage.getDownloadPresignedUrl(path))
+                .fileName(path)
+                .build();
+    }
     @GetMapping("/public/requests")
     public RequestsDto getFilteredRequests(@RequestParam(required = false) Double min,
                                            @RequestParam(required = false) Double max,

@@ -10,6 +10,7 @@ public class ContractRequestMapper {
                 .requestId(contractRequest.getRequestId())
                 .status(contractRequest.getStatus())
                 .userId(contractRequest.getUserId())
+                .createdAt(contractRequest.getCreatedAt())
                 .build();
     }
 }

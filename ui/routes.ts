@@ -6,5 +6,6 @@ export const routes = {
   request: "/requests",
   filteredRequest: "/requests/",
   addRequest: "/requests/create",
+  contractRequests: (requestId: number) => `/requests/${requestId}/contract-request`,
   editRequest: (requestId: number) => `/requests/${requestId}/edit`
 };

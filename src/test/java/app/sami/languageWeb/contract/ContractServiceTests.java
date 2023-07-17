@@ -48,7 +48,6 @@ public class ContractServiceTests extends IntegrationTests {
         contractTest = contractRepository.save(Contract.builder()
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
-                        .contractedContractStatus(ContractStatus.PENDING)
                 .contractStatus(ContractStatus.PENDING)
                 .build());
 

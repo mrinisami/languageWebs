@@ -12,6 +12,9 @@ export const themeDark = createTheme({
     MuiPaper: {
       defaultProps: { elevation: 20 },
       styleOverrides: { root: { background: "rgba(255, 255, 255, 0.16)", padding: 12 } }
+    },
+    MuiChip: {
+      defaultProps: { variant: "outlined" }
     }
   }
 });

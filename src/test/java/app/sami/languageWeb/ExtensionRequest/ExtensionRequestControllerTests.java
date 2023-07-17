@@ -53,7 +53,6 @@ public class ExtensionRequestControllerTests extends IntegrationTests {
         contractTest = contractRepository.save(Contract.builder()
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
-                .contractedContractStatus(ContractStatus.PENDING)
                 .contractStatus(ContractStatus.PENDING)
                 .build());
         extensionRequest = extensionRequestRepository.save(ExtensionRequest.builder()
@@ -65,11 +64,37 @@ public class ExtensionRequestControllerTests extends IntegrationTests {
     }
 
     @Test
-    void createExtension_Returns200() throws Exception{
-        String url = String.format("/contracts/%s/extension-request", contractTest.getId());
+    void getExtension_Returns200() throws Exception{
+        String url = String.format("/extension-requests", contractTest.getId());
+        String token = authUser(userTest);
+
+        mockMvc.perform(get(url, token)
+                .param("contractId", contractTest.getId().toString()))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    void givenWrongUserGetExtension_Returns403() throws Exception{
+        String url = String.format("/extension-requests", contractTest.getId());
         String token = authUser(userTest2);
 
-        mockMvc.perform(post(url, Instant.now().getEpochSecond(), token))
+        mockMvc.perform(get(url, token)
+                        .param("contractId", contractTest.getId().toString()))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void createExtension_Returns200() throws Exception{
+        String url = String.format("/extension-request");
+        ExtensionRequestDto extensionRequestDto = ExtensionRequestDto.builder()
+                .status(ExtensionRequestStatus.PENDING)
+                .date(Instant.now().toEpochMilli())
+                .contractId(contractTest.getId())
+                .build();
+        String token = authUser(userTest2);
+
+        mockMvc.perform(post(url, extensionRequestDto, token))
                 .andExpect(status().isOk());
     }
 

@@ -7,9 +7,11 @@ import app.sami.languageWeb.contractRequest.ContractRequestRepository;
 import app.sami.languageWeb.contractRequest.ContractRequestService;
 import app.sami.languageWeb.contractRequest.models.ContractRequest;
 import app.sami.languageWeb.contractRequest.models.ContractRequestStatus;
+import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.extensionRequest.ExtensionRequestRepository;
 import app.sami.languageWeb.extensionRequest.ExtensionRequestService;
 import app.sami.languageWeb.extensionRequest.dtos.ExtensionRequestDto;
+import app.sami.languageWeb.extensionRequest.dtos.ExtensionRequestStatusDto;
 import app.sami.languageWeb.extensionRequest.models.ExtensionRequest;
 import app.sami.languageWeb.extensionRequest.models.ExtensionRequestStatus;
 import app.sami.languageWeb.request.RequestRepository;
@@ -59,7 +61,6 @@ public class ExtensionRequestServiceTests extends IntegrationTests {
         contractTest = contractRepository.save(Contract.builder()
                 .requestId(requestTest.getId())
                 .contractedUserId(userTest2.getId())
-                .contractedContractStatus(ContractStatus.PENDING)
                 .contractStatus(ContractStatus.PENDING)
                 .build());
         extensionRequest = extensionRequestRepository.save(ExtensionRequest.builder()
@@ -70,24 +71,24 @@ public class ExtensionRequestServiceTests extends IntegrationTests {
                 .build());
     }
 
-    @Test
-    void matchingCreateExtensionRequest_ReturnsTrue(){
-        ExtensionRequestStatus result = extensionRequestService.updateStatus(userTest.getId(), extensionRequest.getId(),
-                ExtensionRequestDto.builder()
-                        .date(newDate)
-                        .status(ExtensionRequestStatus.ACCEPTED)
-                        .build()).getStatus();
-
-        assertThat(result).isEqualTo(ExtensionRequestStatus.ACCEPTED);
-    }
 
     @Test
     void matchingUpdateStatusDenied_ReturnsTrue(){
         ExtensionRequestStatus result = extensionRequestService.updateStatus(userTest.getId(), extensionRequest.getId(),
-                ExtensionRequestDto.builder()
-                        .date(newDate)
+                ExtensionRequestStatusDto.builder()
                         .status(ExtensionRequestStatus.DENIED)
                         .build()).getStatus();
         assertThat(result).isEqualTo(ExtensionRequestStatus.DENIED);
+    }
+
+    @Test
+    void matchingRequestDateUpdateStatus_ReturnsTrue(){
+        extensionRequestService.updateStatus(userTest.getId(), extensionRequest.getId(),
+                ExtensionRequestStatusDto.builder()
+                        .status(ExtensionRequestStatus.ACCEPTED)
+                        .build());
+        Instant result = requestRepository.findById(requestTest.getId()).orElseThrow(NotFoundException::new).getDueDate();
+
+        assertThat(result).isEqualTo(newDate);
     }
 }
