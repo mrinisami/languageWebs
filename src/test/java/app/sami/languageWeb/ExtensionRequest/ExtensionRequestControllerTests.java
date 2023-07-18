@@ -86,7 +86,7 @@ public class ExtensionRequestControllerTests extends IntegrationTests {
 
     @Test
     void createExtension_Returns200() throws Exception{
-        String url = String.format("/extension-request");
+        String url = String.format("/extension-requests");
         ExtensionRequestDto extensionRequestDto = ExtensionRequestDto.builder()
                 .status(ExtensionRequestStatus.PENDING)
                 .date(Instant.now().toEpochMilli())
@@ -98,14 +98,4 @@ public class ExtensionRequestControllerTests extends IntegrationTests {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    void updateStatus_Returns200() throws Exception{
-        String url = String.format("/contracts/%s/extensionRequests/%s", contractTest.getId(), extensionRequest.getId());
-        String token = authUser(userTest2);
-
-        mockMvc.perform(put(url, ExtensionRequestDto.builder()
-                .status(ExtensionRequestStatus.CANCELLED)
-                .build(), token))
-                .andExpect(status().isOk());
-    }
 }

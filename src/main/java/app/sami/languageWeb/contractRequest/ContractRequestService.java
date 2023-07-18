@@ -6,7 +6,6 @@ import app.sami.languageWeb.contractRequest.models.ContractRequestStatus;
 import app.sami.languageWeb.error.exceptions.NotFoundException;
 import app.sami.languageWeb.error.exceptions.UserNotAllowedException;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class ContractRequestService {
 
     public ContractRequest renderContractRequestDecision(ContractRequestStatus status, Long contractRequestId, UUID subject){
         ContractRequest contractRequest = contractRequestRepository.findById(contractRequestId).orElseThrow(NotFoundException::new);
-        if (!contractRequest.isRequestor(subject)){
+        if (!contractRequest.isRequester(subject)){
             throw new UserNotAllowedException();
         }
         if (status == ContractRequestStatus.ACCEPTED){

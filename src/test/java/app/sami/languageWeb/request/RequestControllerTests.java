@@ -22,6 +22,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +55,7 @@ public class RequestControllerTests extends IntegrationTests {
         userTest = userRepository.save(UserFactory.userGenerator());
         userTest1 = userRepository.save(UserFactory.userGenerator());
         requestTest = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId())
-                .withUser(userTest)
+                .withUser(userTest).withDueDate(Instant.now())
                 );
         requestTest2 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId()));
         requestTest3 = requestRepository.save(RequestDtoFactory.generateRequest().withUserId(userTest.getId())

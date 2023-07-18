@@ -45,6 +45,15 @@ CREATE TABLE request(
     price float(53)
 );
 
+CREATE TABLE request_contributor(
+    id BIGSERIAL PRIMARY KEY,
+    user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at timestamp(6),
+    modified_at timestamp(6),
+    contribution float(53),
+    request_id BIGSERIAL NOT NULL REFERENCES request(id) ON DELETE CASCADE
+);
+
 --contract
 
 CREATE TABLE contract(
@@ -75,4 +84,5 @@ CREATE TABLE extension_request(
     status varchar(10) NOT NULL,
     user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     contract_id BIGSERIAL NOT NULL REFERENCES contract(id) ON DELETE CASCADE
-)
+);
+

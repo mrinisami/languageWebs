@@ -63,17 +63,16 @@ public class ContractRequestControllerTests extends IntegrationTests {
     @Test
     void getContractRequestByUserId_Returns200() throws Exception{
         String token = authUser(userTest2);
-        String url = String.format("/contract-request");
+        String url = String.format("/users/%s/contract-requests", userTest2.getId());
 
         mockMvc.perform(get(url, token)
-                        .param("requestId", requestTest.getId().toString())
-                        .param("userId", userTest2.getId().toString()))
+                        .param("requestId", requestTest.getId().toString()))
                 .andExpect(status().isOk());
     }
     @Test
     void createContractRequest_Returns200() throws Exception{
         String token = authUser(userTest2);
-        String url = String.format("/requests/%s/contract-request", requestTest.getId());
+        String url = String.format("/requests/%s/contract-requests", requestTest.getId());
 
         mockMvc.perform(post(url).header("authorization", "Bearer " + token))
                 .andExpect(status().isOk());
@@ -82,7 +81,7 @@ public class ContractRequestControllerTests extends IntegrationTests {
     @Test
     void renderContractDecision_Returns200AndCorrectStatus() throws Exception{
         String token = authUser(userTest);
-        String url = String.format("/contract-request/%s", contractRequest.getId());
+        String url = String.format("/contract-requests/%s", contractRequest.getId());
 
         mockMvc.perform(put(url, new StatusDto(ContractRequestStatus.ACCEPTED), token))
                 .andExpect(status().isOk())
@@ -92,7 +91,7 @@ public class ContractRequestControllerTests extends IntegrationTests {
     @Test
     void renderContractDecision_Returns404() throws Exception{
         String token = authUser(userTest2);
-        String url = String.format("/contract-request/%s", contractRequest.getId());
+        String url = String.format("/contract-requests/%s", contractRequest.getId());
 
         mockMvc.perform(put(url, new StatusDto(ContractRequestStatus.ACCEPTED), token))
                 .andExpect(status().isForbidden());
@@ -112,9 +111,10 @@ public class ContractRequestControllerTests extends IntegrationTests {
     @Test
     void givenDifferentUserIdGetContractRequest_Returns404() throws Exception {
         String token = authUser(userTest2);
-        String url = String.format("/requests/%s/contract-requests", requestTest.getId());
+        String url = String.format("/contract-requests");
 
-        mockMvc.perform(get(url, token))
+        mockMvc.perform(get(url, token)
+                        .param("requestId", requestTest.getId().toString()))
                 .andExpect(status().isForbidden());
     }
 }

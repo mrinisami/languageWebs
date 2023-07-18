@@ -1,4 +1,4 @@
-package app.sami.languageWeb.contractRequest.models;
+package app.sami.languageWeb.requestContributors;
 
 import app.sami.languageWeb.request.models.Request;
 import app.sami.languageWeb.user.models.User;
@@ -16,22 +16,13 @@ import java.util.UUID;
 @Builder
 @With
 @Table
-@Entity(name = "contract_request")
+@Entity(name = "request_contributor")
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class ContractRequest {
+public class RequestContributor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    private ContractRequestStatus status;
-
-    @CreatedDate
-    private Instant createdAt;
-
-    @LastModifiedDate
-    private Instant modifiedAt;
 
     @ManyToOne(fetch = FetchType.EAGER, targetEntity = User.class)
     @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
@@ -39,13 +30,16 @@ public class ContractRequest {
     @Column(name = "user_id")
     private UUID userId;
 
-    @OneToOne
+    @CreatedDate
+    private Instant createdAt;
+    @LastModifiedDate
+    private Instant modifiedAt;
+
+    private Double contribution;
+
+    @ManyToOne
     @JoinColumn(insertable = false, updatable = false, referencedColumnName = "id")
     private Request request;
     @Column(name = "request_id")
     private Long requestId;
-
-    public boolean isRequester(UUID subject){
-        return this.request.isRequester(subject);
-    }
 }
