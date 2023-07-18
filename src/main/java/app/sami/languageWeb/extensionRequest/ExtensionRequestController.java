@@ -10,12 +10,9 @@ import app.sami.languageWeb.extensionRequest.models.ExtensionRequest;
 import app.sami.languageWeb.extensionRequest.models.ExtensionRequestStatus;
 import app.sami.languageWeb.spring.binds.RequestJwtSubject;
 import lombok.AllArgsConstructor;
-import org.simpleframework.xml.Path;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.cert.Extension;
 import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -26,7 +23,7 @@ public class ExtensionRequestController {
     private final ExtensionRequestService extensionRequestService;
     private final ContractRepository contractRepository;
 
-    @PostMapping("/extension-request")
+    @PostMapping("/extension-requests")
     public ExtensionRequestDto createExtensionRequest(
                                                       @RequestJwtSubject UUID subject,
                                                       @RequestBody ExtensionRequestDto extensionRequestDto){
@@ -35,11 +32,7 @@ public class ExtensionRequestController {
         if (!contract.isContracted(subject)){
             throw new UserNotAllowedException("Only the contracted user can request for an extension.");
         }
-        Optional<ExtensionRequest> extensionRequest = extensionRequestRepository.findByContractIdAndStatus(extensionRequestDto.getContractId(),
-                ExtensionRequestStatus.PENDING);
-        if (extensionRequest.isPresent()){
-            extensionRequestRepository.save(extensionRequest.get().withStatus(ExtensionRequestStatus.CANCELLED));
-        }
+
         ExtensionRequest extension = extensionRequestRepository.save(ExtensionRequest.builder()
                 .contractId(extensionRequestDto.getContractId())
                 .userId(subject)
@@ -65,7 +58,8 @@ public class ExtensionRequestController {
     @GetMapping("/extension-requests")
     public ExtensionRequestDto getExtensionRequest(@RequestParam Long contractId,
                                                    @RequestJwtSubject UUID subject){
-        ExtensionRequest extensionRequest = extensionRequestRepository.findByContractIdAndStatus(contractId,
+        ExtensionRequest extensionRequest = extensionRequestRepository.findFirstByContractIdAndStatusOrderByModifiedAtDesc(
+                contractId,
                 ExtensionRequestStatus.PENDING).orElseThrow(NotFoundException::new);
         if (!extensionRequest.isContractor(subject)){
             throw new UserNotAllowedException("Only the requester can see extension requests.");

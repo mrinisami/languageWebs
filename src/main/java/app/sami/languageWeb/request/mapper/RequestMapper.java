@@ -21,6 +21,7 @@ public class RequestMapper {
                 .name(request.getName())
                 .translatedLanguage(request.getTranslatedLanguage())
                 .sourceLanguage(request.getSourceLanguage())
+                .dueDate(request.getDueDate().toEpochMilli())
                 .build();
     }
     public static Request toRequest(PostRequestDto postRequestDto){

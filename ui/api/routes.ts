@@ -28,15 +28,15 @@ export const request = {
 export const contractRequest = {
   getContractRequests: `/contract-requests`,
   getContractRequest: `/contract-request`,
-  renderDecision: (contractRequestId: number) => `/contract-request/${contractRequestId}`,
-  createRequest: (requestId: number | undefined) => `/requests/${requestId}/contract-request`
+  renderDecision: (contractRequestId: number) => `/contract-requests/${contractRequestId}`,
+  createRequest: (requestId: number | undefined) => `/requests/${requestId}/contract-requests`
 };
 
 export const contract = {
   getContracts: "/contracts",
   editContract: (contractId: number) => `/contracts/${contractId}`,
   getUploadUri: "/contracts/storage/upload-uri",
-  askExtension: `/extension-request`,
+  askExtension: `/extension-requests`,
   getExtensionRequests: "/extension-requests",
   editExtensionRequests: (extensionRequestId: number | undefined) => `/extension-requests/${extensionRequestId}`
 };
