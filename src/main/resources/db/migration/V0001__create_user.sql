@@ -86,3 +86,20 @@ CREATE TABLE extension_request(
     contract_id BIGSERIAL NOT NULL REFERENCES contract(id) ON DELETE CASCADE
 );
 
+--stripe
+
+CREATE TABLE stripe_account(
+    id BIGSERIAL PRIMARY KEY,
+    created_at timestamp(6),
+    user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    account_id varchar(200) NOT NULL,
+    UNIQUE(account_id)
+);
+
+CREATE TABLE payment(
+    id BIGSERIAL PRIMARY KEY,
+    created_at timestamp(6),
+    contract_id BIGSERIAL NOT NULL REFERENCES contract(id) ON DELETE CASCADE,
+    payment float(53)
+);
+

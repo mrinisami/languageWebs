@@ -21,4 +21,6 @@ public class AppProps {
     public final String issuer;
     @NotNull
     public final MinioProps minio;
+    @NotNull
+    public final StripeProps stripe;
 }
