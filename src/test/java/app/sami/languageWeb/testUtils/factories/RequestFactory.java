@@ -14,6 +14,7 @@ public class RequestFactory {
                 .translatedLanguage(Randomize.language())
                 .sourceLanguage(Randomize.language())
                 .status(Status.PENDING)
+                .nbWords(Randomize.grade().intValue())
                 .build()
 ;    }
 }

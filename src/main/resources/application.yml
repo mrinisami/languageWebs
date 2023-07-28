@@ -12,6 +12,10 @@ app:
     username: dev
     password: admin123
     url: http://localhost:9000
+  stripe:
+    apiKey: ${app.stripe.apiKey}
+    successUri: ${app.baseURL}/checkout/success
+    cancelUri: ${app.baseURL}/checkout/success
 
 spring:
   security:

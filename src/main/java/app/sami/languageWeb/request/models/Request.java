@@ -55,4 +55,7 @@ public class Request {
             this.dueDate = date;
         }
     }
+    public Double totalPrice(){
+        return this.price * this.nbWords;
+    }
 }

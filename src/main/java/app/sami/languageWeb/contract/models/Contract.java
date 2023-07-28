@@ -62,4 +62,7 @@ public class Contract {
     public boolean isContracted(UUID subject) {return this.contractedUserId.equals(subject);}
     public boolean isStatus(ContractStatus contractStatus) { return this.contractStatus.equals(contractStatus);}
     public boolean isFileAdded() {return !(this.filePath == null);}
+    public Double getTotalPrice(){
+        return this.request.totalPrice();
+    }
 }
