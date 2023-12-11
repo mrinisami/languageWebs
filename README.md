@@ -1,7 +1,27 @@
-# Welcome to LanguageWebs
+# LanguageWebs
 
-This application was created to replicate a financial market for translators and their clients.
+LanguageWebs is a Web Application which connects translators and potential clients.
 
-**The payment processing service is Stripe**
+## Requirements
+---
+- Java 17
+- npm
+- Docker
 
-**Database is PostgreSQL**
+## Run
+---
+`bin up` to boot the server
+
+## Client
+---
+Available commands:
+`cd ui`
+
+`npm install`
+`npm start`
+
+## Server
+---
+`cd src`
+
+`./gradlew bootRun`
